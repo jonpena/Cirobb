@@ -177,9 +177,9 @@ inline int FindIncidentEdge(const Vec2& normal, Vec2 axis1, Vec2 axis2)
 inline Vec2 ClipSegmentToLine(Vec2& I1, Vec2& I2, Vec2& R1, const Vec2& n)
 {
 	Vec2 d1 = I2 - I1;
-	Vec2 d2 = I1 - R1;
+	Vec2 d2 = R1 - I1;
 
-	real t = (d2.x * n.y - d2.y * n.x) / (d1.y * n.x - d1.x * n.y);
+	real t = (d2.y * n.x - d2.x * n.y) / (d1.y * n.x - d1.x * n.y);
 
 	return (0 > t || t > 1)? I1 : I1 + d1 * t;
 }
@@ -273,8 +273,9 @@ void OBBToOBB(Manifold& m, Shape* b1, Shape* b2)
 	Vec2 normalLocal = axes[minimumAxis] * -negation;
 	
 	//The reference edge is in b1.
-	if(minimumAxis < 2)
+	if(flip == -1)
 	{
+		normalLocal = -normalLocal;
 		ref[0] = vertsA[minimumAxis + side];
 		ref[1] = (minimumAxis + side == 3)? vertsA[0] : vertsA[minimumAxis + side + 1];
 		int i = FindIncidentEdge(-normalLocal, axes[2], axes[3]);
@@ -299,15 +300,15 @@ void OBBToOBB(Manifold& m, Shape* b1, Shape* b2)
 	{
 		Vec2 pClipping = ClipSegmentToLine(inc[1 - i], inc[i], ref[i], normalLocal);
 
-		penetration = normalLocal * (ref[0] - pClipping) * flip; //(p1 - p2) * n 
+		penetration = normalLocal * (ref[0] - pClipping); //(p1 - p2) * n 
 
-		if(penetration > -absoluteTol)
+		if(penetration > 0.0f)
 		{
 			m.contacts[numContacts].penetration = penetration;
-			m.contacts[numContacts].position = Rot.Transpose(pClipping + normalLocal * penetration * flip) + b1->body->X;
+			m.contacts[numContacts].position = Rot.Transpose(pClipping + normalLocal * penetration) + b1->body->X;
 			numContacts++;
 		}
 	}
 	m.numContacts = numContacts;
-	m.normal = Rot.Transpose(-normalLocal);
+	m.normal = Rot.Transpose(-normalLocal * flip);
 }
