@@ -9,8 +9,8 @@ struct Contact
 
 	Vec2 position;
 	real penetration;
-	real Pn; //Sum of accumulated projected normal speed error.
-	real Pt; //Sum of accumulated projected tangent speed error
+	real Pn; //Sum of accumulated projected normal velocity error.
+	real Pt; //Sum of accumulated projected tangent velocity error
 	real massNormal, massTangent; //Normal and tangent effective mass
 	real bias; //stabilization of baumgarte
 };
