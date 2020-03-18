@@ -48,7 +48,7 @@ struct Manifold
 };
 
 
-// This is used by std::set. Erin catto
+// This is used by std::set. --> Erin catto
 inline bool operator < (const ManifoldKey& a1, const ManifoldKey& a2)
 {
 	return (a1.A == a2.A && a1.B < a2.B || a1.A < a2.A);
