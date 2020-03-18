@@ -1,4 +1,4 @@
-﻿#include "Manifold.h"
+#include "Manifold.h"
 #include "Collisions.h"
 
 
@@ -18,29 +18,24 @@ This can be achieved with a certain distance heuristic, id, Etc. Erin Catto
 *****************************************************************************************************************/
 void Manifold::Update(Contact* newContacts, int numNewContacts)
 {
-	const real tolerance = 0.0001f;
+	const real tolerance = 0.0004f;
 
 	Contact mergedContacts[2];
 
 	for (int i = 0; i < numNewContacts; i++)
 	{
-		int k = -1;
-		
-		for(int j = 0; k == -1 && j < numContacts; j++)
+		for(int j = 0; j < numContacts; j++)
 		{
-			if((newContacts[i].position - contacts[j].position).SquareMagnitude() < tolerance) k = j; 
-		}
-
-		if (k > -1)
-		{
-			mergedContacts[i] = newContacts[i];
-			mergedContacts[i].Pn = contacts[k].Pn;
-			mergedContacts[i].Pt = contacts[k].Pt;
-		}
-		else 
-			mergedContacts[i] = newContacts[i];
+			if((newContacts[i].position - contacts[j].position).SquareMagnitude() < tolerance)
+			{
+				mergedContacts[i] = newContacts[i];
+				mergedContacts[i].Pn = contacts[j].Pn;
+				mergedContacts[i].Pt = contacts[j].Pt;
+				break;
+			}
+			else if(j + 1 == numContacts) mergedContacts[i] = newContacts[i];
+		}			
 	}
-
 	numContacts = numNewContacts;
 
 	for (int i = 0; i < numContacts; i++) contacts[i] = mergedContacts[i];
@@ -75,7 +70,7 @@ Then we have the stabilization of baumgarte that transforms the position error i
  
 baumgarte = velocidad = x * ϵ / dt
 
-After calculating the stabilization of baumgarte, use the same solver that corrects the speed to correct penetration.
+After calculating the stabilization of baumgarte, use the same solver that corrects the velocity to correct penetration.
 *******************************************************************************************************************************************/
 void Manifold::PreStep(const real& dt)
 {
@@ -126,7 +121,7 @@ void Manifold::PreStep(const real& dt)
 
  NO PENETRATION = λ = (v2 - v1) * n / M⁻¹ >= 0
 
- coulomb friction law = λt <= uλn.
+ coulomb friction law = |λt| <= uλn.
 *****************************************************************************/
 void Manifold::ApplyImpulse(void)
 {
@@ -155,7 +150,7 @@ void Manifold::ApplyImpulse(void)
 
 		real dPt = -vt * c->massTangent; // Ax + b = 0 --> x = -b * A⁻¹; 
 
-		real maxPt = c->Pn * u; // λt <= uλn
+		real maxPt = c->Pn * u; // |λt| <= uλn
 		real Pt0 = c->Pt;
 		c->Pt = Clamp(-maxPt, maxPt, Pt0 + dPt);
 		dPt = c->Pt - Pt0;		
