@@ -1,4 +1,4 @@
-﻿	#include "Clock.h"
+#include "Clock.h"
 #include "Scene.h"
 
 Clock* timer = new Clock;
