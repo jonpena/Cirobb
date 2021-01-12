@@ -1,18 +1,18 @@
 ﻿#ifndef CBMATH_H
 #define CBMATH_H
 
-#include <math.h>
+#include <cmath>
 #include <cfloat>
 
 typedef float real;
 //Irrational Constant PI
-const real PI = 3.14159265358979323846264f;
+const real PI = 3.141592653589;
 //Conversion of Degrees to Radians
 const real RAD = PI / 180;
 //Conversion of Radians to Radians
 const real DEG = 180 / PI;
 //Define functions if there is no other declaration.
-#if !defined(min) && !defined(max)
+#if !defined(min) || !defined(max)
 //the minimum value returns
 #define min(a,b) ((a > b)? (b) : (a))
 //the maximum value returns
@@ -22,28 +22,24 @@ const real DEG = 180 / PI;
 #define absf(a) ((a < 0)? -(real)(a) : (a))
 //The Scalar returns to the Square
 #define pow2(a) ((a) * (a))
-
-
 /********************************************************************************************
 A tuple of n real numbers called components of the vector is called a vector of n dimension.
 Vectors allow us to represent physical vector quantities.
-The abstraction of vectors is very important to understand. instead of solving each incognita separately
-vectors can abstract the dimensions x, y, z ... Dn so that they can be resolved at once.
-There are two ways to represent vector:
+The abstraction of vectors is very important to understand. instead of solving each unknown separately vectors
+can abstract the dimensions x, y, z...n so that they can be resolved together. There are two ways to represent vector:
 
 Polar coordinates: magnitude, direction and sense;
 
 Cartesian coordinates: The components of the vector in the Cartesian axes[x, y, z,...n].
  
- This project makes extensive use of vectors so it is important to know what each operation and representation does.
+ This project does extensive use of vectors so it is important to know that each operation and representation does.
 ********************************************************************************************/
-
 struct Vec2
 {
 	real x, y; 
 	
 	//Constructor By Default
-	Vec2() : x(0.0f), y(0.0f) {;}
+	Vec2(void) : x(0), y(0) {;}
 
 	//Contructor Alternative
 	Vec2(real _x, real _y) : x(_x), y(_y) {;}
@@ -51,17 +47,16 @@ struct Vec2
 	//Set Values In The Vector
 	void Set(const real& _x, const real& _y)
 	{
-		x = _x;
-		y = _y;
+		x = _x; y = _y;
 	}
 
-	//Vector Magnitude --> Pythagoras theorem |C| = sqrt(A^2 + B^2)
+	//Vector Magnitude -> Pythagoras Theorem |C| = sqrt(A^2 + B^2)
 	real Magnitude(void)
 	{
-		return sqrtf(x * x + y * y);
+		return std::sqrt(x * x + y * y);
 	}
 	
-	//Vector Squared Magnitude --> Pythagoras theorem C^2 = A^2 + B^2
+	//Vector Squared Magnitude -> Pythagoras Theorem C^2 = A^2 + B^2
 	real SquareMagnitude(void)  
 	{
 		return x * x + y * y;
@@ -69,37 +64,32 @@ struct Vec2
 	
 	/*************************************************************************************
 	The normalization of the vector is a very useful operation gives us the unit direction of the vector.
-
-	cos(x) = adyacent / hypotenuse  -->  x / magnitude 
-	sin(x) = opposite / hypotenusa  -->  y / magnitude
-	
+	cos(x) = adyacent / hypotenuse = x / magnitude
+	sin(x) = opposite / hypotenusa = y / magnitude
 	*************************************************************************************/
 	Vec2 normalize(void)
 	{
 		real mag = Magnitude();
 
-		return (mag)? *this * (1.0f / mag) : Vec2();
+		return mag ? *this * (1.0f / mag) : Vec2();
 	}
 	
 	//Adding a Vector
 	void operator += (const Vec2& v)
 	{
-		x += v.x; 
-		y += v.y;
+		x += v.x; y += v.y;
 	}
 	
 	//Subtracting a vector
 	void operator -= (const Vec2& v)
 	{
-		x -= v.x;	
-		y -= v.y;
+		x -= v.x;	y -= v.y;
 	}
 
 	//Multiplicando Vector Por Escalar
 	void operator *= (const real& s)
 	{
-		x *= s;
-		y *= s;
+		x *= s; y *= s;
 	}
 
 	//Sum of Vectors
@@ -123,8 +113,7 @@ struct Vec2
 	//Set the components to Absolute Value.
 	void SetAbs(void)
 	{
-		x = absf(x);
-		y = absf(y);
+		x = absf(x); y = absf(y);
 	}
 	
 	//Get the components in Absolute Value.
@@ -140,8 +129,8 @@ struct Vec2
 	This operation will be widely used both in collision detection and in physics.
 
 	if(x1 * x2 + y1 * y2 == 0) then the vectors are perpendicular. Rigth angle.
-	if(x1 * x2 + y1 * y2 >  0) then vectors point in the same direction. acute. 
-	if(x1 * x2 + y1 * y2 <  0) then vectors point in the opposite direction. obtuse. 
+	if(x1 * x2 + y1 * y2 >  0) then the vectors point in the same direction. acute. 
+	if(x1 * x2 + y1 * y2 <  0) then the vectors point in the opposite direction. obtuse. 
 	*****************************************************************************/
 	real operator * (const Vec2 &v)
 	{
@@ -174,11 +163,9 @@ inline real Dot(const Vec2 &v1, const Vec2& v2)
 	return v1.x * v2.x + v1.y * v2.y;
 }
 
-
 /****************************************************************************
-Una de las operaciones mas importantes de los vectores es el producto cruzado.
-se puede observar que es la misma ecuacion que la determinante de una matriz 2x2 or x1 * y2 - y1 * x2. 
-ecuacion lineal con dos incognitas. lo cual indica que:
+One of the most important operations of vectors is the Cross product.
+we can see that it is the same equation as the determinant of a matrix 2x2 "OR" x1 * y2 - y1 * x2 
 
 if (x1 * y2 - y1 * x2 != 0) then The vectors are not parallel, there is only one solution.
 if (x1 * y2 - y1 * x2 == 0) then The vectors are parallel or are the same vector. It has no solution or has an infinite number of solutions.
@@ -187,25 +174,25 @@ i = X;
 j = Y; 
 k = Z;
 
- k = i X j --> Not counterclockwise
--k = j X i --> counterclockwise
+ k = i X j = -j X i -> counterclockwise
+-k = j X i = -i X j -> not counterclockwise
 
-Cross(v1, v2) = Dot(v1 Perp , v2);
+Cross(v1, v2) = Dot(v1 Tangent, v2);
 
 The Function was defined to go counterclockwise.
 ****************************************************************************/
-inline real Cross(const Vec2 v1, const Vec2 v2)
+inline real Cross(const Vec2& v1, const Vec2& v2)
 {
 	return v1.x * v2.y - v1.y * v2.x;
 }
 
 //Producto Cruzado entre Vector y escalar - Direccion Antihorario
-inline Vec2 Cross(const Vec2 v, const real& s)
+inline Vec2 Cross(const Vec2& v, const real& s)
 {
 	return Vec2(s * v.y, -s * v.x);
 }
 
-inline real Clamp(const real min, const real max, const real& v)
+inline real Clamp(const real& min, const real& max, const real& v)
 {
   if (v < min) return min;
   if (v > max) return max;
@@ -220,18 +207,18 @@ but this Mat2 class has only operations of the rotation matrix.
 
 The Matrix 2x2 rotation matrices is:
 
-	| cos(θ)   sin(θ)|
-	|-sin(θ)	 cos(θ)| 
+	|cos(θ) -sin(θ)|
+	|sin(θ)	 cos(θ)| 
 
 We only need the distance in Cartesian coordinates and the orientation in polar.
 
-	| cos(θ)   sin(θ)| |x|
-	|-sin(θ)   cos(θ)| |y|
+	|cos(θ) -sin(θ)| |x|
+	|sin(θ)  cos(θ)| |y|
 
 We multiply the matrix by the vector and obtain the new components of the vector with respect to rotation.
 
-	 x =  cos(0) * x + sin(θ) * y
-	 y = -sin(0) * x + cos(0) * y
+	 x =  cos(θ) * x + sin(θ) * y
+	 y = -sin(θ) * x + cos(θ) * y
 
 The direction of rotation of this matrix is counterclockwise
 
@@ -247,21 +234,19 @@ private:
 public:
 
 	//Constructor by DeFault of the Class
-	Mat2() : m00(0.0f), m01(0.0f), m10(0.0f), m11(0.0f) {}
+	Mat2() : m00(0.0f), m01(0.0f), m10(0.0f), m11(0.0f) {;}
 
 	//Constructor Initialized of the Class
 	Mat2(const real& rad)
 	{
-		m00 =  cosf(rad);  m01 = sinf(rad);
-
+		m00 =  cosf(rad);  m01 = -sinf(rad);
 		m10 = -m01;        m11 = m00;       
 	}
 		
 	//Return the Matriz of Rotation Radian - Magnitude
 	Vec2 Rotate(const real& rad, const Vec2& v)
 	{
-		m00 = cosf(rad);  m01 = sinf(rad);
-
+		m00 = cosf(rad);  m01 = -sinf(rad);
 		m10 = -m01;       m11 = m00;
 
 		return Vec2(v.x * m00 + v.y * m01, v.x * m10 + v.y * m11);
