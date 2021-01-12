@@ -1,28 +1,30 @@
-﻿#include "Clock.h"
+﻿	#include "Clock.h"
 #include "Scene.h"
-#include "Collisions.h"
 
-Clock* times = new Clock;
+Clock* timer = new Clock;
 real fps = 1.0f / 60.0f;
-real counterFps  = 0.0f;
-
-Scene scene(Vec2(0, 350), 100);
-
+real accumulator = 0.0f;
 int numScene = 1;
+bool pause = false;
+bool InitScene = true;
 
-bool boolShape = true;
+Scene scene(Vec2(0, -9.8), 12, 6);
 
-Circle* cPrincipal = new Circle(Vec2(0, 0), 60, 0.0f);
-OBB* bPrincipal = new OBB(Vec2(0, 0), Vec2(60, 60), 0.0f); 
-Shape* principal = cPrincipal;
+Circle cPrincipal(10); OBB bPrincipal(20, 20);
 
-const int widthGlobal = 800;
-const int heigtGlobal = 600;;
+RigidBody* sPrincipal = new RigidBody(cPrincipal, Vec2(0, -100), 90 * RAD); //
+
+RigidBody* cLocal = new RigidBody(Circle(15), Vec2(-23, 0), 0);
+RigidBody* bLocal = new RigidBody(OBB(40, 24), Vec2(18, 0), -PI / 20.0f);
+
+RigidBody* w1 = new RigidBody(OBB(4.0f, 50), Vec2( 20, 0), 0.0f);
+RigidBody* w2 = new RigidBody(OBB(4.0f, 50), Vec2(-20, 0), 0.0f);
+RigidBody* w3 = new RigidBody(OBB(40, 4.0f), Vec2(0,-25), 0.0f);
+RigidBody* w4 = new RigidBody(OBB(40, 4.0f), Vec2(0, 25), 0.0f);
+
 
 void DrawText(int x, int y, char *string)
 {
-	int len, i;
-
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
@@ -33,8 +35,7 @@ void DrawText(int x, int y, char *string)
 	glPushMatrix();
 	glLoadIdentity();
 	glRasterPos2i(x, y);
-	len = (int) strlen(string);
-	for (i = 0; i < len; i++) 
+	for (int i = 0; i < (int)strlen(string); i++) 
 	{
 		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, string[i]);
 	}
@@ -46,218 +47,301 @@ void DrawText(int x, int y, char *string)
 
 
 
-void TestDetectionCollision(Shape* p)
+void DetectionCollision(RigidBody* p)
 {
-	Circle cLocal(Vec2(180, 300), 150, 0.0f);
-	OBB bLocal(Vec2(570, 300), Vec2(180, 100), PI / 9.0f);
+	cLocal->shape->DrawShape();
+	bLocal->shape->DrawShape();
+	sPrincipal->shape->DrawShape();
 
-	Manifold m1(p, &cLocal);
-	Manifold m2(p, &bLocal);
+	Manifold m1(p, cLocal);
+	Manifold m2(p, bLocal);
 
-	if(m1.numContacts > 0) DrawPoint(m1.contacts[0].position);
-
-	if(m2.numContacts > 0)
+	if(m1.numContacts == 1) 
 	{
-		for(int i = 0; i < m2.numContacts; i++) DrawPoint(m2.contacts[i].position);
+		DrawPoint(m1.contacts[0].position, 2, 4);
+		Vec2 value = m1.normal * m1.A->shape->radius; 
+		DrawLine(m1.A->position + value , m1.A->position + value + m1.normal * m1.contacts[0].penetration);
 	}
-
-	bLocal.DrawShape();
-	cLocal.DrawShape();
-	principal->DrawShape();
+	
+	if(m2.numContacts > 0) 
+	{
+		for(int i = 0; i < m2.numContacts; i++)
+		{
+			DrawPoint(m2.contacts[i].position, 2, 4);
+			DrawLine(m2.contacts[i].position, m2.contacts[i].position - m2.normal * m2.contacts[i].penetration);
+		}
+	}
 }
 
 
 
-void TestLowFriction(void)
+void LowFriction(void)
 {
-	OBB* wall1 = new OBB(Vec2(400, 530), Vec2(550, 10), 0.0f);
-	wall1->CalculateMassInertia(0.0f);
-	scene.Add(wall1);
+	RigidBody* b1 = new RigidBody(OBB(110.0, 2.0f), Vec2(0, -20), 0.0f); 
+	b1->Static();
 
-	OBB* wall2 = new OBB(Vec2(220, 100), Vec2(250, 10), 15 * -RAD);
-	wall2->CalculateMassInertia(0.0f);
-	scene.Add(wall2);
+	OBB w2(50.0, 2.0f);
 
-	OBB* wall3 = new OBB(Vec2(500, 250), Vec2(265, 10), 15 *  RAD);
-	wall3->CalculateMassInertia(0.0f);
-	scene.Add(wall3);
+	RigidBody* b2 = new RigidBody(w2, Vec2(-30, 20), -15 * RAD); 
+	b2->Static();
 
-	OBB* wall4 = new OBB(Vec2(130, 400), Vec2(200, 10), 10 * -RAD);
-	wall4->CalculateMassInertia(0.0f);
-	scene.Add(wall4);
+	RigidBody* b3 = new RigidBody(w2, Vec2(20, 10), 15 * RAD); 
+	b3->Static();
 
-	Circle* cir = new Circle(Vec2(85, 12), 20, 0.0f);
-	cir->CalculateMassInertia(1.0f);
-	cir->body->d = 0.35;
-	scene.Add(cir);
+	RigidBody* b4 = new RigidBody(w2, Vec2(-30, 0), -15 * RAD); 
+	b4->Static();
 
-	OBB* obb = new OBB(Vec2(23, 12), Vec2(20, 20), 15 * -RAD);
-	obb->CalculateMassInertia(1.0f);
-	obb->body->u = 0.018f; 
-	scene.Add(obb);
+	RigidBody* b5 = new RigidBody(Circle(2), Vec2(-43.6, 26.6), 0.0f); 
+	b5->Dynamic(1.0f);
+	b5->angularDamping = 0.3f;
+
+	RigidBody* b6 = new RigidBody(OBB(4.0f, 4.0f), Vec2(-48.5, 28.5), -15 * RAD);
+	b6->Dynamic(1.0f);
+	b6->friction = 0.01f; 
+
+	scene.Add(b1);
+	scene.Add(b2);
+	scene.Add(b3);
+	scene.Add(b4);
+	scene.Add(b5);
+	scene.Add(b6);	
 }
 
 
 
-void TestStacking(void)
+void Stacking(void)
 {
-	OBB* wall1 = new OBB(Vec2(400, 505), Vec2(400, 20), 0.0f);
-	wall1->CalculateMassInertia(0.0f);
-	scene.Add(wall1);
+	RigidBody* b1 = new RigidBody(OBB(110.0, 2.0f), Vec2(0, -20), 0.0f); 
+	b1->Static();
+	scene.Add(b1);
 
 	for(int i = 0; i < 10; i++)
 	{
-		OBB* obb = new OBB(Vec2(250, 465 - 40 * i), Vec2(20, 20), 0.0f);
-		obb->CalculateMassInertia(1.0f);	
-		scene.Add(obb);
+		Circle cir(2);
+		OBB obb(4, 4);
 
-		Circle* cir = new Circle(Vec2(400, 465 - 40 * i), 20, 0.0f);
-		cir->CalculateMassInertia(1.0f);	
-		scene.Add(cir);
+		RigidBody* b2 = new RigidBody(obb, Vec2(-18.0f, -17.0f + 4.0f * i), 0.0f); 
+		b2->Dynamic(1.0f);
+
+		RigidBody* b3 = new RigidBody(cir, Vec2(0.0f, -17.0f + 4.0f * i), 0.0f); 
+		b3->Dynamic(1.0f);	
+
+		RigidBody* b4 = nullptr;
 
 		if(i & 1) 
 		{
-			OBB* obb = new OBB(Vec2(550, 465 - 40 * i), Vec2(20, 20), 0.0f);
-			obb->CalculateMassInertia(1.0f);	
-			scene.Add(obb);
+			b4 = new RigidBody(obb, Vec2(18.0f, -17.0f + 4.0f * i), 0.0f); 
+			b4->Dynamic(1.0f);	
 		}
 		else
 		{
-			Circle* cir = new Circle(Vec2(550, 465 - 40 * i), 20, 0.0f);
-			cir->CalculateMassInertia(1.0f);	
-			scene.Add(cir);
+			b4 = new RigidBody(cir, Vec2(18, -17.0f + 4.0f * i), 0.0f); 
+			b4->Dynamic(1.0f);	
 		}
+
+		scene.Add(b2);
+		scene.Add(b3);
+		scene.Add(b4);
 	}
 }
 
 
-void TestPyramid(void)
-{
-	OBB* wall1 = new OBB(Vec2(400, 505), Vec2(400, 20), 0.0f);
-	wall1->CalculateMassInertia(0.0f);
-	scene.Add(wall1);
 
-	int lv = 16; real wh = 15;
+void Pyramid(void)
+{
+	RigidBody* b1 = new RigidBody(OBB(110.0, 2.0f), Vec2(0,-20), 0); 
+	b1->Static();
+	scene.Add(b1);
+
+	int lv = 10; real wh = 4.0f;
 
 	for(int i = 0; i < lv; i++)
 	{
 		for(int j = 0; j < lv - i; j++)
 		{
-			OBB* b = new OBB(Vec2(180 + wh * (i + j * 2) , 472 - wh * i * 2), Vec2(wh, wh), 0.0f);
-			b->CalculateMassInertia(1.0f);
-			scene.Add(b);
+			real x = (j * 2 + i - lv) * wh * 0.5f;
+			real y = (i + 0.5f) * wh - 19.0f;
+
+			RigidBody* b2 = new RigidBody(OBB(wh, wh), Vec2(x, y) , 0); 
+			b2->Dynamic(1.0f);
+			scene.Add(b2);
 		}
 	}
 }
 
 
 
-void TestAngryBirds(void)
+void AngryBirds(void)
 {
-	Circle* pork1 = new Circle(Vec2(475, 155), 10, 0);
-	pork1->CalculateMassInertia(1.0f);
-	scene.Add(pork1);
+	RigidBody* b1 = new RigidBody(OBB(110.0, 2.0f), Vec2(0, -20), 0.0f); 
+	b1->Static();
 
-	Circle* pork2 = new Circle(Vec2(475, 325), 10, 0);
-	pork2->CalculateMassInertia(1.0f);
-	scene.Add(pork2);
+	OBB w2(10.0, 3.0);
 
-	Circle* pork3 = new Circle(Vec2(395, 380), 10, 0);
-	pork3->CalculateMassInertia(1.0f);
-	scene.Add(pork3);
+	RigidBody* b2 = new RigidBody(w2, Vec2(-15, -17.15), 20 * RAD); 
+	b2->Static();
 
-	OBB* wall1 = new OBB(Vec2(400, 505), Vec2(800, 20), 0.0f);
-	wall1->CalculateMassInertia(0.0f);
-	scene.Add(wall1);
+	RigidBody* b4 = new RigidBody(w2, Vec2(15, -17.15), -20 * RAD); 
+	b4->Static();
 
-	OBB* wall2 = new OBB(Vec2(280, 488), Vec2(50, 15), 20 * RAD);
-	wall2->CalculateMassInertia(0.0f);
-	scene.Add(wall2);
+	OBB w3(21.5, 2.0);
+	RigidBody* b3 = new RigidBody(w3, Vec2(0, -15), 0.0f); 
+	b3->Static();
 
-	OBB* wall3 = new OBB(Vec2(472, 476), Vec2(150, 20), 0.0f);
-	wall3->CalculateMassInertia(0.0f);
-	scene.Add(wall3);
+	scene.Add(b1);
+	scene.Add(b2);
+	scene.Add(b3);
+	scene.Add(b4);
 
-	OBB* wall4 = new OBB(Vec2(664.5, 488), Vec2(50, 15), -20 * RAD);
-	wall4->CalculateMassInertia(0.0f);
-	scene.Add(wall4);
-	
-	for(int i = 0; i < 3; i++)
+	int lv = 5, sn = 3;
+
+	for(int i = 0; i < sn; i++) // Column
 	{
-		int temp = (i & 1)? 0 : 1;
-
-		for(int j = 0; j < 7 - temp; j++)
+		for(int j = 0; j < lv; j++) // Levels
 		{
-			OBB* wood1 = new OBB(Vec2(375 + 80 * i, 430 - 56 * j), Vec2(4.0f, 25), 0.0f);
-			wood1->CalculateMassInertia(1.0f);
-			scene.Add(wood1);
+			OBB wo1(0.8, 5.0);
+			OBB wo2(5.0, 0.8);
 
-			OBB* wood2 = new OBB(Vec2(415 + 80 * i, 430 - 56 * j), Vec2(4.0f, 25), 0.0f);
-			wood2->CalculateMassInertia(1.0f);
-			scene.Add(wood2);
+			RigidBody* b5 = new RigidBody(wo1, Vec2(-10 + 8.0 * i, -11.5f + 5.8f * j), 0.0f); 
+			b5->Dynamic(1.0f);
+			scene.Add(b5);
 
-			OBB* wood3 = new OBB(Vec2(395 + 80 * i, 401 - 56 * j), Vec2(25, 4.0f), 0.0f);
-			wood3->CalculateMassInertia(1.0f);		
-			scene.Add(wood3);
+			RigidBody* b6 = new RigidBody(wo1, Vec2(-5.8 + 8.0 * i,-11.5f + 5.8f * j), 0.0f); 
+			b6->Dynamic(1.0);
+			scene.Add(b6);
+
+			RigidBody* b7 = new RigidBody(wo2, Vec2(-7.9 + 8.0 * i, -8.5 + 5.8f * j), 0.0f); 
+			b7->Dynamic(1.0f);		
+			scene.Add(b7);
 		}
 	}
 }
 
 
-void (*TestScene[])(void) = {TestLowFriction, TestStacking, TestPyramid, TestAngryBirds};
+
+
+// this physics engine does not support rotation away from the local center of mass.
+// So this is a special scene that was built to roughly rotate 4 OBBs away from the local center of mass.
+void RotaryBox(void)
+{
+	real angularVelocity = RAD * 0.1f / fps; // Angular Velocity
+	
+	Mat2 rot(w1->orientation);
+
+	w1->angularVelocity = w2->angularVelocity = angularVelocity; 
+	w3->angularVelocity = w4->angularVelocity = angularVelocity;
+	
+	w1->velocity = rot.Rotate(Cross(Vec2(20, 0),-angularVelocity));
+	w2->velocity = rot.Rotate(Cross(Vec2(20, 0), angularVelocity));
+	w3->velocity = rot.Rotate(Cross(Vec2(0, 25), angularVelocity));
+	w4->velocity = rot.Rotate(Cross(Vec2(0, 25),-angularVelocity));
+}
+
+
+
+void FreeStyle(void)
+{
+	RigidBody* b1 = new RigidBody(OBB(110.0f, 4.0f), Vec2(0, -20), 0.0f);
+	b1->Static();
+
+	OBB w2(4.0f, 50.0f);
+
+	RigidBody* b2 = new RigidBody(w2, Vec2(-60, 4), 10 * RAD);
+	b2->Static();
+
+	RigidBody* b3 = new RigidBody(w2, Vec2(60, 4), -10 * RAD);
+	b3->Static();
+
+	scene.Add(b1);
+	scene.Add(b2);
+	scene.Add(b3);
+}
+
+
+void (*TestScene[])(void) = {LowFriction, Stacking, Pyramid, AngryBirds, RotaryBox, FreeStyle};
+
 
 char* SceneStrings[] = 
 {
-	"Scene 1: Collision Detection", 
-	"Scene 2: Low Friction",
-	"Scene 3: Stacking Boxes And Circles",
-	"Scene 4: Pyramid", 
-	"Scene 5: Game Style Angry Bird",
+	"Scene 1-7: Collision Detection", 
+	"Scene 2-7: Low Friction",
+	"Scene 3-7: Stacking Boxes & Circles",
+	"Scene 4-7: Pyramid", 
+	"Scene 5-7: Angry Bird Style",
+	"Scene 6-7: Rotary Box",
+	"Scene 7-7: Free Style"
 };
 
 
-void Start(void)
+char* PositionStrings[] = 
 {
-	scene.Clear();
-	
-	bPrincipal->CalculateMassInertia(0.0f);
-	cPrincipal->CalculateMassInertia(0.0f);
+	"Position Correction: None",
+	"Position Correction: Baumgarte Stabilization", 
+	"Position Correction: Non-Linear-Gauss-Seidel"
+};
 
-	scene.Add(principal);
 
-	if(numScene > 1)
+static void Start(void)
+{
+	if(InitScene)
 	{
-		TestScene[numScene - 2]();
+		InitScene = false;
+
+		scene.Clear();
+
+		sPrincipal->Dynamic(1);
+		//principal->gravityScale = 0.0f;
+
+		scene.Add(sPrincipal);
+		
+		if(numScene == 6) // Special Scene 6
+		{
+			w1->Static();
+			w2->Static();
+			w3->Static();
+			w4->Static();
+
+			scene.Add(w1);
+			scene.Add(w2);
+			scene.Add(w3);
+			scene.Add(w4);
+		}
+
+		if(numScene > 1) TestScene[numScene - 2]();
 	}
 }
 
 
 
-
-void Update(void)
+static void Update(void)
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-	DrawText(1, 15, SceneStrings[numScene - 1]);
+	DrawText(2, 16, SceneStrings[numScene - 1]);
+	DrawText(2, 44, PositionStrings[Scene::CorrectionType]);
+	DrawText(2, 72, pause ? "[P]AUSE: TRUE" : "(P)AUSE: FALSE");
 
 	if(numScene == 1)
 	{
-		TestDetectionCollision(principal);
+		DetectionCollision(sPrincipal);
 	}
 	else
 	{
-		for(times->Elapsed(counterFps); counterFps >= fps; counterFps -= fps)
-		{		
-			scene.Step(fps);
-		}
+		if(numScene == 6) RotaryBox();
 
-		for(auto temp : scene.bodies) temp->DrawShape();
+	  if(!pause) scene.Step(fps);
+	
+		for(RigidBody* temp : scene.bodies) temp->shape->DrawShape();
 
 		for(auto temp = scene.manifolds.begin(); temp != scene.manifolds.end(); temp++)
 		{
-			for(int i = 0; i < temp->second.numContacts; i++) DrawPoint(temp->second.contacts[i].position);
+			for(int i = 0; i < temp->second.numContacts; i++)
+			{
+				DrawPoint(temp->second.contacts[i].position, 2, 3.3);
+				DrawPoint(temp->second.contacts[i].Oldpoint, 1, 5);
+			}
 		}
 	}
 
@@ -265,73 +349,92 @@ void Update(void)
 }
 
 
+
 void MouseMotion(int x, int y)
 {
-	x += (widthGlobal - glutGet(GLUT_WINDOW_WIDTH))  * 0.5f;
-	y += (heigtGlobal - glutGet(GLUT_WINDOW_HEIGHT)) * 0.5f;
+	real _x =  0.05f * (x * 2.0f - glutGet(GLUT_WINDOW_WIDTH));
+	real _y = -0.05f * (y * 2.0f - glutGet(GLUT_WINDOW_HEIGHT));
 
-	principal->body->X.Set(x, y);
+	sPrincipal->position.Set(_x, _y);
+	sPrincipal->velocity.SetZero();
+	//principal->orientation = 0.0f;
+	sPrincipal->angularVelocity = 0.0f;
 }
 
 
 
 void Keyboard(unsigned char key, int x, int y)
 {
-	x += (widthGlobal - glutGet(GLUT_WINDOW_WIDTH))  * 0.5f;
-	y += (heigtGlobal - glutGet(GLUT_WINDOW_HEIGHT)) * 0.5f;
+	real _x =  0.05f * (x * 2.0f - glutGet(GLUT_WINDOW_WIDTH));
+	real _y = -0.05f * (y * 2.0f - glutGet(GLUT_WINDOW_HEIGHT));
 
 	switch (key)
 	{
-		case 'q':
-		case 'Q': principal->body->θ += PI / 72;
+		case 'q': 
+		case 'Q': sPrincipal->orientation += PI / 72;
 		break;
+		
 		case 'e': 
-		case 'E': principal->body->θ -= PI / 72;
+		case 'E': sPrincipal->orientation -= PI / 72;
 		break;
-		case 'l':
-		case 'L': {glutPostRedisplay();}
-		break;
-		case 'b':
+
+		case 'b': 
 		case 'B':
 		{
-			OBB* temp = new OBB(Vec2(x, y), Vec2(20, 20), 0.0f);
-			temp->CalculateMassInertia(1.0f);
-			scene.Add(temp);
+			OBB temp(Vec2(5, 5));
+			RigidBody* b = new RigidBody(temp, Vec2(_x, _y), 0);
+			b->Dynamic(1.0f);
+			scene.Add(b);
 		}
 		break;
+		
 		case 'c':
 		case 'C':
 		{
-			Circle* temp = new Circle(Vec2(x, y), 20, 0.0f);
-			temp->CalculateMassInertia(1.0f);
-			scene.Add(temp);
+			Circle temp(2.5f);
+			RigidBody* b = new RigidBody(temp, Vec2(_x, _y), 0.0f);
+			b->Dynamic(1.0f);
+			scene.Add(b);
 		}
 		break;
+		
 		case 'w':
 		case 'W':
 		{
-			if(boolShape)
-			{
-				bPrincipal->body->X = principal->body->X;
-				principal = bPrincipal;
+			if(sPrincipal->shape->type == circle)
+			{ 
+				sPrincipal->shape = &bPrincipal;
+				bPrincipal.body = sPrincipal;
 			}
 			else
-			{
-				cPrincipal->body->X = principal->body->X;
-				principal = cPrincipal;
+			{ 
+				sPrincipal->shape = &cPrincipal;
+				cPrincipal.body = sPrincipal;
 			}
-			boolShape = !boolShape;
-			scene.bodies[0] = principal;
 		}
 		break;
+		
 		case '1':
 		case '2':
 		case '3':
 		case '4':
 		case '5':
+		case '6':
+		case '7':
 		{
+			InitScene = true;
 			numScene = int(key) - 48; 
 			glutPostRedisplay();
+		}
+		break;
+
+		case 'p':
+		case 'P':
+		pause = !pause;
+		break;
+		case char(32): // SPACE
+		{
+			Scene::CorrectionType = Scene::CorrectionType + 1 > 2 ? 0.0f : Scene::CorrectionType + 1; 
 		}
 		break;
 	}
@@ -339,17 +442,16 @@ void Keyboard(unsigned char key, int x, int y)
 
 
 
-
 void Reshape(int width, int height)
 {
-	if (!height) height = 1;
+	if(height == 0) height = 1;
 	glViewport(0, 0, width, height);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0, width, height, 0);
-	glTranslatef((width - widthGlobal) * 0.5f, (height - heigtGlobal) * 0.5f, 0.0f);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluPerspective(height * 0.05f, float(width) / height, 0, 1);
+	glTranslatef(0.0f, 0.0f, -110);
 }
 
 
@@ -357,13 +459,12 @@ void Reshape(int width, int height)
 int main(int args, char** argv)
 {	
 	glutInit(&args, argv);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
-	glutInitWindowPosition(0,0);
-	glutInitWindowSize(widthGlobal, heigtGlobal);
-	glutCreateWindow("Ciroob Engine");
-	glutReshapeFunc(Reshape);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+	glutInitWindowSize(900, 700);
+	glutCreateWindow("Ciroob Engine 1.1.4");
 	glutDisplayFunc(Start);
 	glutIdleFunc(Update);
+	glutReshapeFunc(Reshape);
 	glutMotionFunc(MouseMotion);
 	glutKeyboardFunc(Keyboard);
 	glutMainLoop();
