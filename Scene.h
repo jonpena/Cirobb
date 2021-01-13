@@ -5,22 +5,25 @@
 #include <vector>
 #include "Manifold.h"
 
+enum {NONE = 0, BAUMGARTE, NGS};
 
 struct Scene
 {
+	static int CorrectionType;
+
 	Vec2 gravity;
 
-	int iterations;
+	int iterPos, iterVel;
 
-	std::vector<Shape*> bodies;
+	std::vector<RigidBody*> bodies;
 
 	std::map<ManifoldKey, Manifold> manifolds;
 
-	Scene(Vec2 _gravity, int _iterations) : gravity(_gravity), iterations(_iterations) {;}
+	Scene(const Vec2& _gravity, const int& _iterVel, const int& _iterPos) : gravity(_gravity), iterVel(_iterVel), iterPos(_iterPos) {;}
 
 	void Clear(void);
 
-	void Add(Shape*);
+	void Add(RigidBody*);
 
 	void Step(const real&);
 

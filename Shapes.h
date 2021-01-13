@@ -2,14 +2,17 @@
 #define SHAPES_H
 
 #include <stdio.h>
+#include <iostream>
 #include "glut.h"
 #include "RigidBody.h"
 
+
 enum typeShape {circle, obb};
+
 
 struct Shape
 {
-	//circle characteristics
+	//Circle characteristics
 	real radius; 
 	//OBB characteristics
 	Vec2 width;
@@ -19,6 +22,8 @@ struct Shape
 	RigidBody* body;
 	//Function Virtual To Draw Shape.
 	virtual void DrawShape(void) = 0;
+	//Function Virtual To create Dynamic Shape
+	virtual Shape* newShape(void) = 0;
 	//Function Virtual to Compute Mass And Inertia 
 	virtual void CalculateMassInertia(const real&) = 0;
 };
@@ -29,47 +34,54 @@ struct Shape
 struct Circle : virtual public Shape
 {	
 	//Constructor Initialized
-	Circle(Vec2 _X, real _radius, real _θ)
+	Circle(const real& _radius)
 	{
-		type = circle;
-		radius = _radius;
-		body = new RigidBody;
-		body->X = _X;
-		body->θ = _θ;
+		radius = _radius; type = circle;  
 	}
 	
 	//Destructor By default
-	~Circle(void) { delete body; }
+	~Circle(void) {;}
+
+	Shape* newShape() override {return new Circle(this->radius);}
 
 	void DrawShape(void) override;
 	
 	void CalculateMassInertia(const real&) override;
 };
 
+
 /****************************** O B B ********************************/
 /****************************** O B B ********************************/
+
 
 struct OBB : virtual public Shape
 {
-	//Constructor Initialized
-	OBB(Vec2 _X, Vec2 _width, real _θ)
+	//Constructor Initialized with Vector
+	OBB(const Vec2& _width) 
 	{
-		type = obb;
-		width = _width;
-		body = new RigidBody;
-		body->X = _X;
-		body->θ = _θ;
+		type = obb; width = _width;
+	}
+
+	//Constructor Initialized with scalars
+	OBB(const real& x, const real& y)
+	{
+		type = obb; width.Set(x, y);
 	}
 
 	//Destructor By default
-	~OBB(void) { delete body; }
+	~OBB(void) {;}
+
+	Shape* newShape(void) override {return new OBB(this->width);}
 
 	void DrawShape(void) override;
 
 	void CalculateMassInertia(const real&) override;
 };
 
-//Function To Draw A Point.
-void DrawPoint(const Vec2&);
+//Function To Draw A Point: Point, Color, Size.
+void DrawPoint(const Vec2& p, const int&, const int&);
+
+//Fucntion To Draw A Line
+void DrawLine(const Vec2& p1, const Vec2& p2);
 
 #endif

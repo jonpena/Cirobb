@@ -1,24 +1,29 @@
-#include "Manifold.h"
+﻿
 #include "Collisions.h"
+#include "Scene.h"
 
 
-Manifold::Manifold(Shape* _A, Shape* _B) : numContacts(0)
+
+Manifold::Manifold(RigidBody* _A, RigidBody* _B) : numContacts(0)
 {
-	A = _A;
-	B = _B;
+	A = _A; B = _B;
 
-	this->u = sqrtf(A->body->u * B->body->u); // friction
+	this->u = sqrtf(A->friction * B->friction); // Mixed Friction
 
-	Dispatcher[A->type][B->type](*this, A, B);
+	this->e = max(A->restitution, B->restitution); // Max Restitution
+
+	Dispatcher[A->shape->type][B->shape->type](*this, A->shape, B->shape);
 }
 
+
+
 /****************************************************************************************************************
-if the manifold exists in the list, we check if there is any contact point that can be started hot
-This can be achieved with a certain distance heuristic, id, Etc. Erin Catto
+if the manifold exists in the list, we check if there is any contact point that can be Warm Starting
+This can be achieved with a distance heuristic, id, Etc. Reference Erin Catto
 *****************************************************************************************************************/
-void Manifold::Update(Contact* newContacts, int numNewContacts)
+void Manifold::Update(Contact* newContacts, const int& numNewContacts)
 {
-	const real tolerance = 0.0004f;
+	const real k_tolerance = 0.1f;
 
 	Contact mergedContacts[2];
 
@@ -26,140 +31,289 @@ void Manifold::Update(Contact* newContacts, int numNewContacts)
 	{
 		for(int j = 0; j < numContacts; j++)
 		{
-			if((newContacts[i].position - contacts[j].position).SquareMagnitude() < tolerance)
+			if((newContacts[i].position - contacts[j].position).Magnitude() < k_tolerance)
 			{
 				mergedContacts[i] = newContacts[i];
 				mergedContacts[i].Pn = contacts[j].Pn;
 				mergedContacts[i].Pt = contacts[j].Pt;
 				break;
 			}
-			else if(j + 1 == numContacts) mergedContacts[i] = newContacts[i];
+			else
+			if(j + 1 == numContacts)
+			{
+				mergedContacts[i] = newContacts[i];
+				mergedContacts[i].Oldpoint = mergedContacts[i].position;
+			}
 		}			
 	}
 	numContacts = numNewContacts;
 
-	for (int i = 0; i < numContacts; i++) contacts[i] = mergedContacts[i];
+	for(int i = 0; i < numContacts; i++) contacts[i] = mergedContacts[i];
 }
 
 
-/***********************************************************************************************************************
-This PreStep method calculates the normal and tangent inverse effective mass of each contact point.
 
-	A = J * M⁻¹ * Jt
-
-Only in 2 dimensions is =
-
-	             "J"                                    "M⁻¹"                 "Jt"
-
-[nx, ny, n X r1, -nx, -ny, -n X r2] |m1⁻¹  0     0     0     0      0   | |nx     |
-																	  |0		 m1⁻¹	 0     0     0		  0   | |ny     |
-																	  |0     0     I1⁻¹  0     0      0   | |n X r1 |  
-					                          |0     0     0     m2⁻¹  0      0   | |-nx    |  
-					                          |0     0     0     0     m2⁻¹   0   | |-ny    |    
-					                          |0     0     0     0     0      I2⁻¹| |-n X r2|
-
-* This is only 1 constraint with 2 bodies involved.
-
-* The final result will be a scalar that is equal to: A = m1⁻¹ + m2⁻¹ + (n X r1)^2 * I1⁻¹ + (n X r2)^2 * I2⁻¹
-
-* The same goes for the At but with the tangent vector.
-
-Equation = At = m1⁻¹ + m2⁻¹ + (t X r1)^2 * I1⁻¹ + (t X r2)^2 * I2⁻¹
-
-Then we have the stabilization of baumgarte that transforms the position error into a speed error.
- 
-baumgarte = velocidad = x * ϵ / dt
-
-After calculating the stabilization of baumgarte, use the same solver that corrects the velocity to correct penetration.
-*******************************************************************************************************************************************/
-void Manifold::PreStep(const real& dt)
+void Manifold::WarmStarting(void)
 {
-	const real k_biasFactor = 0.2f;
-	const real k_allowedPenetration = 0.02f;
-
-	RigidBody* b1 = A->body, * b2 = B->body;
-
-	Vec2 tangent = Cross(normal, 1);
+	Vec2 tangent = Cross(normal, -1.0f);
 
 	for(int i = 0; i < numContacts; i++)
 	{
 		Contact* c = contacts + i;
 
-		Vec2 r1 = c->position - A->body->X;
-		Vec2 r2 = c->position - B->body->X;
+		Vec2 ra = A->position - c->position;
+		Vec2 rb = B->position - c->position;
 
-		c->massNormal = b1->m⁻¹ + b2->m⁻¹  + pow2(Cross(normal, r1))  * b1->I⁻¹ + pow2(Cross(normal, r2))  * b2->I⁻¹;
-		
-		c->massNormal = 1.0f / c->massNormal;
-
-		c->massTangent = b1->m⁻¹ + b2->m⁻¹ + pow2(Cross(tangent, r1)) * b1->I⁻¹ + pow2(Cross(tangent, r2)) * b2->I⁻¹;
-		
-		c->massTangent = 1.0f / c->massTangent;
-
-		c->bias = max(0.0f, c->penetration - k_allowedPenetration) * k_biasFactor / dt;
-
-		//Hot start
 		Vec2 P = normal * c->Pn + tangent * c->Pt;
-
-		b1->v -= P * b1->m⁻¹;
-		b2->v += P * b2->m⁻¹;
-		b1->ω -= Cross(P, r1) * b1->I⁻¹;
-		b2->ω += Cross(P, r2) * b2->I⁻¹;			
+	
+		A->velocity -= P * A->invm;
+		B->velocity += P * B->invm;
+		A->angularVelocity -= Cross(P, ra) * A->invI;
+		B->angularVelocity += Cross(P, rb) * B->invI;
 	}
 }
 
 
 
+/***********************************************************************************************************************
+This PreStep Method calculates the normal and tangent inverse effective mass of each Contact point and Baumgarte Stabilization.
+
+Equation: A = J * M⁻¹ * Jt
+
+* Jt = Jacobian tramsposed
+
+* Only in 2 dimensions the inverse effective mass is =
+
+	              J                                      M⁻¹                   Jt
+[nx, ny, n X ra, -nx, -ny, -n X rb] |m1⁻¹  0     0     0     0      0   | |nx     |
+																	  |0		 m1⁻¹	 0     0     0		  0   | |ny     |
+																	  |0     0     I1⁻¹  0     0      0   | |n X ra |  
+					                          |0     0     0     m2⁻¹  0      0   | |-nx    |  
+					                          |0     0     0     0     m2⁻¹   0   | |-ny    |    
+					                          |0     0     0     0     0      I2⁻¹| |-n X rb|
+
+* The X in this case Represents the Cross Product.
+
+* This is only 1 constraint with 2 rigid bodies involved.
+
+* The final result will be a scalar that is equal to: A = m1⁻¹ + m2⁻¹ + (n X r1)^2 * I1⁻¹ + (n X r2)^2 * I2⁻¹
+
+* The same goes for the "A" but with the tangent vector.
+
+* Equation: At = m1⁻¹ + m2⁻¹ + (t X r1)^2 * I1⁻¹ + (t X r2)^2 * I2⁻¹
+
+* Then we have the Baumgarte Stabilization that transforms the "Position Error" into a "Velocity Error".
+ 
+* Velocity Bias = Baumgarte = x / Δt * ϵ
+
+* After calculating the value of Baumgarte Stabilization, We use the same Solver that resolves the Velocity Constraint to resolves penetration.
+*******************************************************************************************************************************************/
+void Manifold::PreStep(const real& dt)
+{
+	const real k_slop = 0.01f;
+	const real k_biasFactor = 0.2f;
+
+	real massLinear = A->invm + B->invm;
+
+	for(int i = 0; i < numContacts; i++)
+	{
+		Contact* c = contacts + i;
+
+		Vec2 ra = A->position - c->position;
+		Vec2 rb = B->position - c->position;
+
+		c->massNormal = massLinear + pow2(Cross(normal, ra)) * A->invI + pow2(Cross(normal, rb)) * B->invI;
+		
+		c->massNormal = 1.0f / c->massNormal;
+
+		c->massTangent = massLinear + pow2(Dot(normal, ra)) * A->invI + pow2(Dot(normal, rb)) * B->invI; // Cross(tangent, r)^2 = Dot(normal, r)^2 : 2D
+		
+		c->massTangent = 1.0f / c->massTangent;
+
+		Vec2 dv = B->velocity + Cross(rb, B->angularVelocity) - A->velocity - Cross(ra, A->angularVelocity);
+
+		real vn = dv * normal;
+
+		c->restitution = vn < -1 ? vn * e : 0.0f;
+
+		if(Scene::CorrectionType == BAUMGARTE) // Baumgarte Stabilization
+		{
+			c->bias = min(0.0f, c->penetration + k_slop) * k_biasFactor / dt;
+		}
+	}
+}
+
+
 
 /****************************************************************************
+ Non-Penetration Constraint = (v2 - v1) * J >= 0
+
+ Coulomb Friction law |λt| <= uλn.
+
+ We Resolve the Non-penetration Constraint resolving: x = -b * A⁻¹
  
- b = ϵ / Δt - J * V1; Relative Velocity 
+ b = (v2 - v1) * J  Relative normal Velocity 
 
- A = J * M⁻¹ * Jt;    inverse effective mass 
+ A = J * M⁻¹ * Jt  Inverse Effective Mass 
 
- λ =  P = x = -b * A⁻¹
+ x = λ = |P| = -b * A⁻¹; // The Lambda is constraint impulse signed magnitude.
 
- NO PENETRATION = λ = (v2 - v1) * n / M⁻¹ >= 0
+ P = Jt * λ;
+ 
+ L = P X r; 
 
- coulomb friction law = |λt| <= uλn.
+ v2 = v1 + P * m⁻¹
+
+ ω2 = ω1 + L * I⁻¹
 *****************************************************************************/
 void Manifold::ApplyImpulse(void)
 {
-	RigidBody* b1 = A->body, *b2 = B->body;
+	// Friction Constraint based on Coulomb law: |λt| <= uλn "OR" -uλn <= λt <= uλn
 
-	Vec2 tangent = Cross(normal, 1.0f);
+	Vec2 tangent = Cross(normal, -1.0f); // Vector Tangent
 
-	for (int i = 0; i < numContacts; i++)
+	for(int i = 0; i < numContacts; i++)
 	{
 		Contact* c = contacts + i; 
 
-		Vec2 r1 = c->position - b1->X;
-		Vec2 r2 = c->position - b2->X;
+		Vec2 ra = A->position - c->position;
+		Vec2 rb = B->position - c->position;
 
-		Vec2 dv = b2->v + Cross(r2, b2->ω) - b1->v - Cross(r1, b1->ω);	
+		Vec2 dv = B->velocity + Cross(rb, B->angularVelocity) - A->velocity - Cross(ra, A->angularVelocity); // (v2 - v1) Δv Relative Velocity
 
-		real vn = dv * normal;
-	
-		real dPn = (-vn + c->bias) * c->massNormal; // Ax + b - c = 0 --> x = (-b + c) * A⁻¹; 
-		
-		real Pn0 = c->Pn;
-		c->Pn = max(Pn0 + dPn, 0.0f);
-		dPn = c->Pn - Pn0;
-
-		real vt = dv * tangent;
+		real vt = dv * tangent; // Tangent Relative Velocity
 
 		real dPt = -vt * c->massTangent; // Ax + b = 0 --> x = -b * A⁻¹; 
 
-		real maxPt = c->Pn * u; // |λt| <= uλn
+		real MaxPt = u * c->Pn; // MaxPt = uλn
 		real Pt0 = c->Pt;
-		c->Pt = Clamp(-maxPt, maxPt, Pt0 + dPt);
-		dPt = c->Pt - Pt0;		
+		c->Pt = Clamp(-MaxPt, MaxPt, Pt0 + dPt); // |λt| <= uλn  "OR"  -uλn <= λt <= uλn
+		dPt = c->Pt - Pt0;
 
-		Vec2 P = normal * dPn + tangent * dPt;
+		Vec2 P = tangent * dPt; // Jt * λ
 
-		b1->v -= P * b1->m⁻¹;
-		b2->v += P * b2->m⁻¹;
-		b1->ω -= Cross(P, r1) * b1->I⁻¹;
-		b2->ω += Cross(P, r2) * b2->I⁻¹;
+		A->velocity -= P * A->invm;
+		B->velocity += P * B->invm;
+		A->angularVelocity -= Cross(P, ra) * A->invI;
+		B->angularVelocity += Cross(P, rb) * B->invI;
 	}
+
+	// Non-Penetration Constraint = (v2 - v1) * J >= 0
+
+	for(int i = 0; i < numContacts; i++)
+	{
+		Contact* c = contacts + i; 
+				
+		Vec2 ra = A->position - c->position;
+		Vec2 rb = B->position - c->position;
+
+		Vec2 dv = B->velocity + Cross(rb, B->angularVelocity) - A->velocity - Cross(ra, A->angularVelocity); // (v2 - v1) Δv Relative Velocity
+
+		real vn = dv * normal; // Normal Relative Velocity
+
+		real dPn = -(vn + c->restitution + c->bias) * c->massNormal; // Ax + b = 0 --> x = -b * A⁻¹; 
+
+		real Pn0 = c->Pn;
+		c->Pn = max(c->Pn + dPn, 0.0f); // Accumulated Impulse & (v2 - v1) * J / M⁻¹ >= 0
+		dPn = c->Pn - Pn0;
+
+		Vec2 P = normal * dPn; // Jt * λ
+
+		A->velocity -= P * A->invm; 
+		B->velocity += P * B->invm;
+		A->angularVelocity -= Cross(P, ra) * A->invI;
+		B->angularVelocity += Cross(P, rb) * B->invI;
+	}
+}
+
+
+
+ real Manifold::RecalculatePenetration(Vec2& normal, Vec2& position, const int& i)
+ {
+	Shape* sA = this->A->shape;
+	Shape* sB = this->B->shape; 
+
+	PostPosition p = postPosition;
+
+	Vec2 distance = B->position - A->position;
+
+	if(sA->type + sB->type == 0) // CircleToCircle
+	{
+		real magnitude = distance.Magnitude();
+		normal = this->normal;
+		position = A->position + normal * ((sA->radius - sB->radius + magnitude) * 0.5f);
+		return magnitude - sA->radius - sB->radius;
+	}
+	else
+	if(sA->type + sB->type == 1) // CircleToOBB || OBBToCircle
+	{
+		Mat2 rotB(B->orientation - p.orientationOldB);
+		normal = rotB * this->normal;
+		Vec2 point2 = rotB * p.point2[i];
+		real magnitude = normal * (distance + point2);  
+		position = A->position + normal * magnitude;
+		return magnitude - sA->radius;
+	}
+	else
+	if(sA->type + sB->type == 2) // OBBToOBB
+	{	
+		Mat2 rotA(A->orientation - p.orientationOldA);
+		Mat2 rotB(B->orientation - p.orientationOldB);
+		normal = rotB * this->normal;
+		Vec2 point1 = rotA * p.point1[i];
+		Vec2 point2 = rotB * p.point2[i];
+		real penetration = normal * (distance + point2 - point1);
+		position = A->position + point1 + normal * penetration;	
+		return penetration;
+	}
+	return 0;
+}
+
+ 
+
+/****************************************
+	C(x + dx) ~ = C(x) + J * dx 
+
+	dx = M ^ -1 * J ^ T * λ
+	
+	C(x) + J * M ^ -1 * J ^ T * λ = 0
+
+	We Resolve for the lambda = λ
+
+	λ = -C(x) / J * M ^ -1 * J ^ T
+****************************************/
+void Manifold::ApplyCorrection(void)
+{
+	const real k_slop = 0.02f;
+	const real k_biasFactor = 0.2f;
+
+	real massLinear = A->invm + B->invm;
+
+	Vec2 XA = A->position;
+	Vec2 XB = B->position;
+	real θA = A->orientation;
+	real θB = B->orientation;
+
+	Vec2 contactPoint, normal;
+
+	for(int i = 0; i < numContacts; i++)	
+	{
+		real penetration = RecalculatePenetration(normal, contactPoint, i);
+
+		Vec2 ra = A->position - contactPoint;
+		Vec2 rb = B->position - contactPoint;
+
+		real massNormal = massLinear + pow2(Cross(normal, ra)) * A->invI + pow2(Cross(normal, rb)) * B->invI;
+
+		Vec2 C = normal * -min(penetration + k_slop, 0) * (k_biasFactor / massNormal); // Jt * λ
+
+		XA -= C * A->invm;
+		XB += C * B->invm;
+		θA -= Cross(C, ra) * A->invI;
+		θB += Cross(C, rb) * B->invI;
+	}
+	A->position = XA;
+	B->position = XB;
+	A->orientation = θA;
+	B->orientation = θB;
 }

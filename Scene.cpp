@@ -4,30 +4,36 @@ typedef std::pair<ManifoldKey, Manifold> ManPair;
 typedef std::map<ManifoldKey, Manifold>::iterator ManifoldAux;
 
 
-//Add a Shape to the list
-void Scene::Add(Shape* body)
+int Scene::CorrectionType = NONE;
+
+
+//Add a Shape to the vector
+void Scene::Add(RigidBody* body)
 {
 	bodies.push_back(body);
 }
 
-//Clear the list and map
+//Clear the vector and map
 void Scene::Clear(void)
 {
-	bodies.clear(); manifolds.clear();
+	bodies.clear(); 
+	manifolds.clear();
 }
 
- //Contact Persistence Algorithm from erin catto.
+//Contact Persistence Algorithm Reference Erin catto.
 void Scene::BroadPhase()
 {
-	for(int i = 0; i < (int)bodies.size(); i++)
+	const int length = bodies.size();
+
+	for(int i = 0; i < length; i++)
 	{
-	  Shape* bi = bodies[i];
+		RigidBody* bi = bodies[i];
 
-		for(int j = i + 1; j < (int)bodies.size(); j++)
+		for(int j = i + 1; j < length; j++)
 		{
-			Shape* bj = bodies[j];
+			RigidBody* bj = bodies[j];
 
-			if(bi->body->m + bj->body->m == 0.0f) continue;
+			if(bi->m + bj->m == 0.0f) continue;
 
 			ManifoldKey key(bi, bj);
 			Manifold newMan(bi, bj);
@@ -43,11 +49,13 @@ void Scene::BroadPhase()
 				else
 				{
 					iter->second.normal = newMan.normal;
+					iter->second.A = newMan.A;
+					iter->second.B = newMan.B;
+					iter->second.postPosition = newMan.postPosition;
 					iter->second.Update(newMan.contacts, newMan.numContacts);
 				}
 			}
-			else 
-				manifolds.erase(key);
+			else manifolds.erase(key);
 		}
 	}
 }
@@ -58,37 +66,30 @@ void Scene::BroadPhase()
 There are many ways to integrate the kinematic equations of motion. But the semi-implicit (symplectic) Euler
 It is the most widely used method in real-time physics engines due to its acceptable stability and speed.
 
-
-Semi-Implicit (Symplectic) Euler
+Semi-Implicit Euler OR Symplectic Euler
 
 Linear movement equations
 
-v = v0 + P * M⁻¹ + Fext * M⁻¹ * Δt
+v = v + P * M⁻¹ + Fext * M⁻¹ * Δt
 
-x = x0 + v * Δt
-
+X = X + C * Δt
+ 
 Rotational movement equations
 
-ω = ω0 + L * I⁻¹ + τext * I⁻¹ * Δt
+ω = ω + L * I⁻¹ + τext * I⁻¹ * Δt
 
-θ = θ0 + ω * Δt
+θ = θ + ω * Δt
 ***********************************************************************************************/
-
-
-
 void Scene::Step(const real& dt)
 {
 	BroadPhase();
 
-	for(auto temp : bodies)
+	for(auto b : bodies)
 	{
-		RigidBody* b = temp->body;
-
-		if(b->m <= 0.0f) continue;
-
-		b->v += (b->F * b->m⁻¹ + gravity) * dt; // v = v0 + Fext * M⁻¹ * Δt
-		b->ω += b->τ * b->I⁻¹ * dt;	            // ω = ω0 + τext * I⁻¹ * Δt	
-		b->ω *= pow(0.97, b->d); // min = 0.97 max = 1.0;
+		b->velocity += (b->force * b->invm + gravity * b->gravityScale) * dt; // v = v + Fext * M⁻¹ * Δt
+		b->angularVelocity += b->torque * b->invI * dt;	                      // ω = ω + τext * I⁻¹ * Δt
+		b->velocity *= pow(1.0f, b->linearDamping);                          // min = 0.97f  ^  max = 1;
+		b->angularVelocity *= pow(1.0f, b->angularDamping);                  // min = 0.97f  ^  max = 1;
 	}
 
 
@@ -97,22 +98,43 @@ void Scene::Step(const real& dt)
 		temp->second.PreStep(dt);
 	}
 
-
-	for(int i = 0; i < iterations; i++)
+	
+	for(ManifoldAux temp = manifolds.begin(); temp != manifolds.end(); temp++)
 	{
+		// v = v + P * M⁻¹
+		// ω = ω + L * I⁻¹
+		temp->second.WarmStarting(); 
+	}
+		
+
+	for(int i = 0; i < iterVel; i++) // (SI/PGS) Sequential-Impulses/Projected-Gauss-Seidel
+	{ 
 		for(ManifoldAux temp = manifolds.begin(); temp != manifolds.end(); temp++)
 		{
-			temp->second.ApplyImpulse(); // v = v0 + P * M⁻¹   and   ω = ω0 + L * I⁻¹;
+			// v = v + P * M⁻¹  
+			// ω = ω + L * I⁻¹
+			temp->second.ApplyImpulse(); 
 		}
 	}
+	
 
-	for(auto temp : bodies)
+	if(CorrectionType == NGS)
 	{
-		RigidBody* b = temp->body;
-		
-		b->X += b->v * dt;  // x = x0 + v * Δt
-		b->θ += b->ω * dt;  // θ = θ0 + ω * Δt 
-		b->F.SetZero(); 
-		b->τ = 0.0f;
+		for(int i = 0; i < iterPos; i++) // (NGS) Newton-Ranpson-Gauss-Seidel OR Non-Linear-Gauss-Seidel
+		{
+			for(ManifoldAux temp = manifolds.begin(); temp != manifolds.end(); temp++)
+			{
+				temp->second.ApplyCorrection();
+			}
+		}
+	}
+	
+
+	for(auto b : bodies)
+	{
+		b->position += b->velocity * dt; // x = x + v * Δt
+		b->orientation += b->angularVelocity * dt; // θ = θ + ω * Δt 
+		b->force.SetZero(); 
+		b->torque = 0.0f;
 	}
 }

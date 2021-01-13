@@ -3,23 +3,33 @@
 
 #include "CbMath.h"
 
+struct Shape;
+
 struct RigidBody
 {
-	Vec2 X;   // Position
-	Vec2 v;   // Linear velocity
-	Vec2 F;   // Linear Force 
-	real θ;   // Orientation or Angle
-	real ω;   // Angular Velocity	
-	real τ;   // Angular Force or Torque
-	real m;   // Mass
-	real m⁻¹; // Inverse Mass
-	real I;   // Inertia
-	real I⁻¹; // Inverse Inertia
-	real u;   // Friction
-	real d;   // Angular Damping
+	Vec2 position;        // Position
+	Vec2 velocity;        // Linear Velocity
+	Vec2 force;           // Linear Force 
+	real orientation;     // Orientation or Angle
+	real angularVelocity; // Angular Velocity	
+	real torque;          // Angular Force or Torque
+	real m;							  // Mass
+	real invm;            // Inverse Mass
+	real I;               // Inertia
+	real invI;            // Inverse Inertia
+	real friction;        // Friction
+	real restitution;     // Restitution
+	real linearDamping;   // Linear  Damping
+	real angularDamping;  // Angular Damping
+	real gravityScale;    // Gravity Scale
+
+	Shape* shape; // Circle, OBB
 	
-	//Set Dynamic Object.
-	void Dynamic(void);
+	//Constructor RigidBody
+	RigidBody(Shape&, const Vec2&, const real&);
+
+	//Set Dynamic Object 
+	void Dynamic(const real& Density);
 
 	//Set Static Object.
 	void Static(void);
