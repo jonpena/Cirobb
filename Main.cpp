@@ -1,9 +1,16 @@
-#include "Clock.h"
+/*************************************************************************
+* Copyright (c) 2019-2021 Jonathan Peña
+* Permission to use, copy, modify, distribute and sell this software
+* and its documentation for any purpose is hereby granted without fee,
+* provided that the above copyright notice appear in all copies.
+* Jonathan Peña makes no representations about the suitability 
+* of this software for any purpose.  
+* It is provided "as is" without express or implied warranty. 
+**************************************************************************/
+
 #include "Scene.h"
 
-Clock* timer = new Clock;
 real fps = 1.0f / 60.0f;
-real accumulator = 0.0f;
 int numScene = 1;
 bool pause = false;
 bool InitScene = true;
