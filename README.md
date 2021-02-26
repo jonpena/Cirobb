@@ -13,16 +13,18 @@ If you want to make more complex simulations with many Constraints and Shapes.
 I recommend you use better box2d which in my opinion I think it's the best 2d open source physics engine that exists.
 
 
+<h3> Images </h3>
+
 
 
 If you want to better understand how the Physics Engine I recommend you learn a lot about linear Algebra, Numerical Analysis,
 Calculus and Classical Physics. And I Also recommend you these slides and books:
 
-<b> Erin Catto </b> for his incredible slides and knowledges about Physics Game:
+- <b> Erin Catto </b> for his incredible slides and knowledges about Physics Game:
 
-	- Iterative Dynamics with Temporal Coherence.
+	* Iterative Dynamics with Temporal Coherence.
 
- 	- Modeling and Solving Constraints.
+ 	* Modeling and Solving Constraints.
 	
 	* Soft Constraints.
 	
