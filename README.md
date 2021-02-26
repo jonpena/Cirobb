@@ -7,6 +7,7 @@ The main idea of ​​this project is to explain in more detail how physics eng
 I must clarify that not all physics engines use the same approach. This engine follows the dynamics of impulses.
 
 
+
 If you want to make more complex simulations with many Constraints and Shapes. 
 I recommend you use better box2d which in my opinion I think it's the best 2d open source physics engine that exists.
 
@@ -16,7 +17,7 @@ I recommend you use better box2d which in my opinion I think it's the best 2d op
 If you want to better understand how the Physics Engine I recommend you learn a lot about linear Algebra, Numerical Analysis,
 Calculus and Classical Physics. And I Also recommend you these slides and books:
 
-- Erin catto For his incredible slides and knowledges about Physics Game:
+Erin catto for his incredible slides and knowledges about Physics Game:
 
 	* Iterative Dynamics with Temporal Coherence.
 
@@ -31,14 +32,14 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 	* Understanding Constraints. 
 
 
-- Dirk Gregorius For his incredible slides about collision detection:
+Dirk Gregorius For his incredible slides about collision detection:
 
 	* The Separating Axis test Between Convex Polyhedra.
 	
 	* Robust Contact Creation for physics Simulation.
 
 
-- Erwin Coumans For his slides and Physics Engine:
+Erwin Coumans For his slides and Physics Engine:
 
 	* Forum Bullet.
 
