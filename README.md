@@ -17,7 +17,7 @@ I recommend you use better box2d which in my opinion I think it's the best 2d op
 If you want to better understand how the Physics Engine I recommend you learn a lot about linear Algebra, Numerical Analysis,
 Calculus and Classical Physics. And I Also recommend you these slides and books:
 
-- Erin catto for his incredible slides and knowledges about Physics Game:
+- <b> Erin Catto </b> for his incredible slides and knowledges about Physics Game:
 
 	* Iterative Dynamics with Temporal Coherence.
 
@@ -32,40 +32,40 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 	* Understanding Constraints. 
 
 
-- Dirk Gregorius For his incredible slides about collision detection:
+- <b> Dirk Gregorius </b> For his incredible slides about collision detection:
 
 	* The Separating Axis test Between Convex Polyhedra.
 	
 	* Robust Contact Creation for physics Simulation.
 
 
-- Erwin Coumans For his slides and Physics Engine:
+- <b> Erwin Coumans </b> For his slides and Physics Engine:
 
 	* Forum Bullet.
 
 	* Exploring MLCP Solvers And Featherstone.
 
 
-- Tonge Richard For his incredible Slides:
+- <b> Tonge Richard </b> For his incredible Slides:
 
 	* Iterative Rigid Body Solvers 2012.
 
 	* Iterative Rigid Body Solvers 2013.
 
 
-- Brian Vincent Mirtich For introducing a different approach to Physics Game.
+- <b> Brian Vincent Mirtich </b> For introducing a different approach to Physics Game.
 
 	* Impulse-based Dynamic Simulation of Rigid Body Systems.
 
 
-- Kenny Erleben : for his slides and thesis doctoral: 
+- <b> Kenny Erleben </b>: for his slides and thesis doctoral: 
 
 	* Book of Physics-Based Animation 2005.
 
 	* Numerical Methods for Linear Complementarity Problems in Physics-based Animation.
 
 
-- David Baraff For his slides and Knowledges:
+- <b> David Baraff </b> For his slides and Knowledges:
 
 	* Analytical Methods for Dynamic Simulation of Non-penetrating Rigid Bodies.
 
@@ -76,29 +76,29 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 	* Physically Based Modeling. Pixar Animation Studios.
 
 
-- Jim Van Verth For his Slides:
+- <b> Jim Van Verth </b> For his Slides:
 
 	* Numerical Integration.
 
 	* Understanding Rotations.
 
 
-- Matthias Müller for his Slides About:
+- <b> Matthias Müller </b> for his Slides About:
 
 	* Position Based Dynamics.
 
 
-- Michael B. Cline for his Slides:
+- <b> Michael B. Cline </b> for his Slides:
 
 	* Post-Stabilization for Rigid Body Simulation with Contact and Constraints.
 
 
-- Randy Gaul for his Slide: 
+- <b> Randy Gaul </b> for his Slide: 
 
 	* Separating Axis Test (SAT) and Support Points in 2D.
 
 
-- Books about physics and Collision Detection: 
+- <b> Books about physics and Collision Detection </b>: 
 
 	* Game Physics Pearls Gino van den Bergen and Dirk Gregorius.
 
