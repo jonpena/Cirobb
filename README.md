@@ -15,6 +15,9 @@ I recommend you use better box2d which in my opinion I think it's the best 2d op
 
 <h3> Images </h3>
 
+![img1](/images/img1.gif?raw=true)
+![img2](/images/img2.gif?raw=true)
+![img3](/images/img3.gif?raw=true)
 
 
 If you want to better understand how the Physics Engine I recommend you learn a lot about linear Algebra, Numerical Analysis,
