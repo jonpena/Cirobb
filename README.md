@@ -7,50 +7,106 @@ The main idea of ​​this project is to explain in more detail how physics eng
 I must clarify that not all physics engines use the same approach. This engine follows the dynamics of impulses.
 
 
-
-/////////////////////// Description of Explanation ///////////////////////
-
-* Not all headers are going to be explained. Only the most important and relevant.
-
-* I will not go into such deep details.
-
-/////////////////////////////////////////////////////////////////////////////
+If you want to make more complex simulations with many Constraints and Shapes. 
+I recommend you use better box2d which in my opinion I think it's the best 2d open source physics engine that exists.
 
 
 
 
-////////////////////// Special Thanks ////////////////////////
+If you want to better understand how the Physics Engine I recommend you learn a lot about linear Algebra, Numerical Analysis,
+Calculus and Classical Physics. And I Also recommend you these slides and books:
 
-The people I'm going to name in this segment are the people who are worried about teaching and giving their knowledge without receiving anything in return.
+- Erin catto For his incredible slides and knowledges about Physics Game:
 
-También son personas dedicadas a esto profesionalmente.
+	* Iterative Dynamics with Temporal Coherence.
 
-* Erin catto : For its incredible slides:: Understanding Constraints, Soft Constraints, Iterative Dynamics with Temporal Coherence, ETC. 
-
-* Dirk Gregorius : For its incredible slides on collision detection :: The Separating Axis test Between Convex Polyhedra, Robust Contact Creation for physics Simulation, ETC.
-
-* Erwin Coumans : for your slides :: Exploring MLCP Solvers And Featherstone, ETC.
-
-* Tonge Richard : for your slides :: Iterative Rigid Body Solvers 2012 - 2013 .
-
-* Brian Vincent Mirtich : for introducing a different approach to game physics :: Impulse-based Dynamic Simulation of Rigid Body Systems.
-
-* Kenny Erleben : for his slides and thesis doctoral :: Stable, Robust, and Versatile Multibody Dynamics Animation, Numerical Methods for Linear Complementarity Problems in Physics-based Animation, ETC.
-
-* David Baraff : for your slides :: Linear-Time Dynamics using Lagrange Multipliers, ETC.
-
-* Jim Van Verth : for your slides :: Numerical Integration, Understanding Rotations, ETC.
-
-* Books about physics and collision detection : "Game Physics Pearls" Gino van den Bergen and Dirk Gregorius, Real-Time Collision Detection Christer Ericson.
-
-//////////////////////////////////////////////////////////////////////////
+ 	* Modeling and Solving Constraints.
+	
+	* Soft Constraints.
+	
+	* Numerical_Methods.
+	
+	* Continuous Detection Collision.
+	
+	* Understanding Constraints. 
 
 
+- Dirk Gregorius For his incredible slides about collision detection:
+
+	* The Separating Axis test Between Convex Polyhedra.
+	
+	* Robust Contact Creation for physics Simulation.
 
 
-////////////////////////////// About the Author //////////////////////////////////
-Hello, my name is Jonathan Gustavo Peña Rincones, I am from Venezuela and I am 20 years old and I really like physics in games,
-I like the dynamics of physics engines and how the equations predict movement. You can contact me here: granj215@gmail.com.
+- Erwin Coumans For his slides and Physics Engine:
+
+	* Forum Bullet.
+
+	* Exploring MLCP Solvers And Featherstone.
+
+
+- Tonge Richard For his incredible Slides:
+
+	* Iterative Rigid Body Solvers 2012.
+
+	* Iterative Rigid Body Solvers 2013.
+
+
+- Brian Vincent Mirtich For introducing a different approach to Physics Game.
+
+	* Impulse-based Dynamic Simulation of Rigid Body Systems.
+
+
+- Kenny Erleben : for his slides and thesis doctoral: 
+
+	* Book of Physics-Based Animation 2005.
+
+	* Numerical Methods for Linear Complementarity Problems in Physics-based Animation.
+
+
+- David Baraff For his slides and Knowledges:
+
+	* Analytical Methods for Dynamic Simulation of Non-penetrating Rigid Bodies.
+
+	* Fast Contact Force Computation for Nonpenetrating Rigid Bodies.
+	
+	* Linear-Time Dynamics using Lagrange Multipliers.
+
+	* Physically Based Modeling. Pixar Animation Studios.
+
+
+- Jim Van Verth For his Slides:
+
+	* Numerical Integration.
+
+	* Understanding Rotations.
+
+
+- Matthias Müller for his Slides About:
+
+	* Position Based Dynamics.
+
+
+- Michael B. Cline for his Slides:
+
+	* Post-Stabilization for Rigid Body Simulation with Contact and Constraints.
+
+
+- Randy Gaul for his Slide: 
+
+	* Separating Axis Test (SAT) and Support Points in 2D.
+
+
+- Books about physics and Collision Detection: 
+
+	* Game Physics Pearls Gino van den Bergen and Dirk Gregorius.
+
+	* Real-Time Collision Detection Christer Ericson.
 
 
 Sample Video: https://www.youtube.com/watch?v=feVtoHiZaCg
+
+
+////////////////////////////// About the Author //////////////////////////////////
+Hi, my name is Jonathan Gustavo Peña Rincones, I am from Venezuela and I am 20 years old and I really like physics in games,
+I like the Dynamics of Physics Engines and how the equations predict movement. You can contact me here: granj215@gmail.com.
