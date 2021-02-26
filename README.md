@@ -1,5 +1,6 @@
 # Cirobb-Engine 1.1.4
 
+
 Cirobb Engine is a 2d physics engine inspired by box2d lite that was created with the purpose of helping people who are starting
 in this wonderful world of physics for video games. The engine uses the erin catto contact persistence algorithm
 and its implementation of the PGS (Projected Gauss Seidel) solver to solve the MLCP very well known as a sequential impulse.
@@ -108,6 +109,7 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 Sample Video: https://www.youtube.com/watch?v=feVtoHiZaCg
 
 
-////////////////////////////// About the Author //////////////////////////////////
+<h3> About the Author </h3>
+
 Hi, my name is Jonathan Gustavo Peña Rincones, I am from Venezuela and I am 20 years old and I really like physics in games,
 I like the Dynamics of Physics Engines and how the equations predict movement. You can contact me here: granj215@gmail.com.
