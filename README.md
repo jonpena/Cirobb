@@ -1,5 +1,6 @@
-# Cirobb-Engine 1.1.4
+# Cirobb-Engine V1.1.4
 
+" Tested in Visual Studio 2012"
 
 Cirobb Engine is a 2d <b>Physics Engine</b> inspired by box2d lite that was created with the purpose of helping people who are starting
 in this wonderful world of physics for video games. The engine uses the Erin Catto contact persistence algorithm
