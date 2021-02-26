@@ -10,7 +10,7 @@ I must clarify that not all physics engines use the same approach. This engine f
 
 
 If you want to make more complex simulations with many Constraints and Shapes. 
-I recommend you use better <b>Box2d</b> which in my opinion I think it's the best 2d open source physics engine that exists.
+I recommend you use better <b>Box2D</b> which in my opinion I think it's the best 2D open source physics engine that exists.
 
 
 <h3> Images </h3>
