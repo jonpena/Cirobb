@@ -19,11 +19,12 @@ I recommend you use better box2d which in my opinion I think it's the best 2d op
 ![img2](/images/img2.gif?raw=true)
 ![img3](/images/img3.gif?raw=true)
 
+* Read math and physics books and Game Physics 
 
 If you want to better understand how the Physics Engine I recommend you learn a lot about linear Algebra, Numerical Analysis,
 Calculus and Classical Physics. And I Also recommend you these slides and books:
 
-- <b> Erin Catto </b> for his incredible slides and knowledges about Physics Game:
+- <b> Erin Catto </b> for his incredible slides and knowledges about Game Physics:
 
 	* Iterative Dynamics with Temporal Coherence.
 
