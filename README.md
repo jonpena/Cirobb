@@ -118,5 +118,5 @@ Sample Video: https://www.youtube.com/watch?v=feVtoHiZaCg
 
 <h3> About the Author </h3>
 
-Hi, my name is Jonathan Gustavo Peña Rincones, I am from Venezuela and I am 20 years old and I really like physics in games,
+Hi, my name is Jonathan Peña, I'm from Venezuela. I really like physics in Videogames,
 I like the Dynamics of Physics Engines and how the equations predict movement. You can contact me here: granj215@gmail.com.
