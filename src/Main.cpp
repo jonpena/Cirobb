@@ -1,9 +1,9 @@
 /*************************************************************************
-* Copyright (c) 2019-2021 Jonathan Peña
+* Copyright (c) 2019-2021 Jonathan PeÃ±a
 * Permission to use, copy, modify, distribute and sell this software
 * and its documentation for any purpose is hereby granted without fee,
 * provided that the above copyright notice appear in all copies.
-* Jonathan Peña makes no representations about the suitability 
+* Jonathan PeÃ±a makes no representations about the suitability 
 * of this software for any purpose.  
 * It is provided "as is" without express or implied warranty. 
 **************************************************************************/
@@ -16,7 +16,7 @@ bool InitScene = true;
 
 real fps = 1.0f / 60.0f;
 
-Scene scene(Vec2(0, -9.8), 12, 4);
+Scene scene(Vec2(0, -10.0f), 12, 4);
 
 Circle cPrincipal(10); OBB bPrincipal(20, 20);
 
@@ -468,7 +468,7 @@ int main(int args, char** argv)
 	glutInit(&args, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(900, 700);
-	glutCreateWindow("Ciroob Engine 1.1.4");
+	glutCreateWindow("Ciroob Engine V1.1.4");
 	glutDisplayFunc(Start);
 	glutIdleFunc(Update);
 	glutReshapeFunc(Reshape);
