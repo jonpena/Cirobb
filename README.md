@@ -120,14 +120,6 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 
 	* Real-Time Collision Detection Christer Ericson.
 
-
-
-<h3>Demo Video</h3>
-
-Cirobb Engine V1.1.4 : <a target= "_blank">https://youtu.be/j2p6qmOVA7M</a>
-
-<a href="https:https://youtu.be/j2p6qmOVA7M" target="_blank"> Wikipedia </a>
-
 <h3> About the Author </h3>
 
 Hi, my name is Jonathan Peña, I'm from Venezuela. I really like physics in Videogames,
