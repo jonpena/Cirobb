@@ -13,7 +13,7 @@
 
 /**********************************************************************************************************************
 * Although there are phyisics engines that add the masses manually to avoid certain problems such as: Low convergence of the solver
- when a heavy object is on top of a light object. The mass can also be proportional to the geometric Area. For example:
+ when a heavy object is on top of a light Object. The mass can also be proportional to the geometric Area. For example:
 
 * Circle Area = Radius * PI * PI 
 
