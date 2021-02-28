@@ -26,7 +26,8 @@ I recommend you use better <b>Box2D</b> which in my opinion I think it's the bes
 
 Cirobb Engine V1.1.4 : https://youtu.be/j2p6qmOVA7M
 
-* Read math and physics books and Game Physics 
+
+* <b>Read math and physics books and Game Physics</b> 
 
 If you want to better understand how the Physics Engine I recommend you learn a lot about linear Algebra, Numerical Analysis,
 Calculus and Classical Physics. And I Also recommend you these slides and books:
