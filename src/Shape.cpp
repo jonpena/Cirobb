@@ -8,12 +8,11 @@
 * It is provided "as is" without express or implied warranty. 
 **************************************************************************/
 
-
 #include "Shape.h"					
 
 /**********************************************************************************************************************
 * Although there are phyisics engines that add the masses manually to avoid certain problems such as: Low convergence of the solver
- when a heavy object is on top of a light Object. The mass can also be proportional to the geometric Area. For example:
+ when a heavy object is on top of a light object. The mass can also be proportional to the geometric Area. For example:
 
 * Circle Area = Radius * PI * PI 
 
@@ -25,14 +24,14 @@ These are the two geometric Areas that this physics engine uses to Obtain the re
 It can also be said that it's the resistance of the body to the Rotation movement.
 
 inertia matrix = |X  0  0|
-	               |0  Y  0|
-	               |0  0  Z|
+                 |0  Y  0|
+                 |0  0  Z|
 
 2D physics engines have 3 Degrees of Freedom 2 of translation [X, Y, 0] and 1 of Rotation [0, 0, Z]. It Rotates on the Z Axis.
 
 inertia matrix for 2D = |0  0  0|
-	                      |0  0  0|
-	                      |0  0  Z|
+                        |0  0  0|
+                        |0  0  Z|
 
 So when we multiply the matrix we will obtain a simple scalar value that represents the Rotation on the Z axis.
 It is also important to know that the moment of inertia Depends only on the geometry of the body and the position of the Axis of rotation.
@@ -44,11 +43,11 @@ Equation: Inertia = mass * Distance^2
 
 Rx = Ry = Rz = Radius * Radius  
 
-								|m*Rx*2/5   0            0|
-								|		 						          |
-	              |0       m*Ry*2/5        0|
-								|								 		      |
-	              |0          0     m*Rz*2/5|
+             |m*Rx*2/5   0            0|
+             |                         |
+             |0       m*Ry*2/5        0|
+             |                         |
+             |0          0     m*Rz*2/5|
 
 
 2- Inertia Tensor of Rectangle = 
@@ -59,135 +58,140 @@ Rx = y * y + z * z
 Ry = x * x + z * z
 Rz = x * x + y * y
 
-						   |m*Rx/12		 0				   0|
-							 |											  |
-							 |0			  m*Ry/12		     0|
-							 |										 	  |
-							 |0          0     m*Ry/12|
+             |m*Rx/12    0           0|
+             |                        |
+             |0       m*Ry/12        0|
+             |                        |
+             |0          0     m*Ry/12|
 
 
 In case 2d we only need the value of the matrix on the Z Axis which is simply a scalar Value.
 ***********************************************************************************************************************/
 void Circle::CalculateMassInertia(const real& density)
 {
-	body->m = PI * radius * radius * density;
-	body->invm = body->m ? 1.0f / body->m : 0.0f;
-	body->I = body->m * radius * radius * 0.4f;
-	body->invI = body->I ? 1.0f / body->I : 0.0f;
+  body->m = PI * radius * radius * density;
+  body->invm = body->m ? 1.0f / body->m : 0.0f;
+  body->I = body->m * radius * radius * 0.4f;
+  body->invI = body->I ? 1.0f / body->I : 0.0f;
 }
 
 
 
 void OBB::CalculateMassInertia(const real& density)
 {
-	body->m = width.x * width.y * density;
-	body->invm = body->m ? 1.0f / body->m : 0.0f;
-	body->I = body->m * width.SquareMagnitude() / 12.0f; 
-	body->invI = body->I ? 1.0f / body->I : 0.0f;
+  body->m = width.x * width.y * density;
+  body->invm = body->m ? 1.0f / body->m : 0.0f;
+  body->I = body->m * width.SquareMagnitude() / 12.0f; 
+  body->invI = body->I ? 1.0f / body->I : 0.0f;
 }
 
 
 
 void Circle::DrawShape(void)
 {
-	const int  countVerts = 30; // number of Vertices
-	const real valueVerts = PI * 2 / countVerts;
-	real temp[countVerts + 1][2];
-	real angle = body->orientation;
-
-	for(int i = 0; i <= countVerts; i++) // RADIAN [0, 2PI] --> DEGREE [0, 360]
-	{
-		temp[i][0] = radius * cosf(valueVerts * i); 
-		temp[i][1] = radius * sinf(valueVerts * i); 
-	}
-
-	glPushMatrix();
-	glTranslatef(body->position.x, body->position.y, 0.0f);	
-	glEnable(GL_BLEND);
-	glBlendFunc (GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4f(0.4f, 0.4f, 0.4f, 0.4f);
-	glBegin(GL_POLYGON);
-	for(int i = 0; i <= countVerts; i++)
-	{
-		glVertex2f(temp[i][0], temp[i][1]);
-	}
-	glEnd();
-	glDisable(GL_BLEND);
-
-	glColor3f(0.65f, 0.65f, 0.65f);
-	glBegin(GL_LINE_STRIP);
-	for(int i = 0; i <= countVerts; i++)
-	{
-		glVertex2f(temp[i][0], temp[i][1]);
-	}
-	glEnd();
-	glBegin(GL_LINES);
-	glVertex2f(0.0f, 0.0f);
-	glVertex2f(radius * cosf(angle), radius * sinf(angle));
-	glEnd();
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glPopMatrix();
+  const int  countVerts = 40; // Number of Vertices
+  const real valueVerts = PI * 2 / countVerts;
+  Vec2 verts[countVerts + 1];
+  
+  for(int i = 0; i <= countVerts; i++) // RADIAN [0, 2PI] --> DEGREE [0, 360]
+  {
+    verts[i].x = radius * cosf(valueVerts * i); 
+    verts[i].y = radius * sinf(valueVerts * i); 
+  }
+  
+  glPushMatrix();
+  glTranslatef(body->position.x, body->position.y, 0.0f);	
+  glEnable(GL_BLEND);
+  glBlendFunc (GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+  glColor4f(0.4f, 0.4f, 0.4f, 0.4f);
+  
+  glBegin(GL_POLYGON);
+  for(int i = 0; i <= countVerts; i++)
+  {
+    glVertex2f(verts[i].x, verts[i].y);
+  }
+  glEnd();
+  
+  glDisable(GL_BLEND);
+  
+  glColor3f(0.65f, 0.65f, 0.65f);
+  
+  glBegin(GL_LINE_STRIP);
+  for(int i = 0; i <= countVerts; i++)
+  {
+    glVertex2f(verts[i].x, verts[i].y);
+  }
+  glEnd();
+  
+  glBegin(GL_LINES);
+  glVertex2f(0, 0);
+  glVertex2f(radius * cosf(body->orientation), radius * sinf(body->orientation));
+  glEnd();
+  
+  glColor3f(1.0f, 1.0f, 1.0f);
+  
+  glPopMatrix();
 }
 
 
 
 void OBB::DrawShape(void)
 {
-	glPushMatrix();
-	glTranslatef(body->position.x, body->position.y, 0.0f);
-	Mat2 Rot(body->orientation);
-	Vec2 p1 = Rot * width * 0.5f;
-	Vec2 p2 = Rot * Vec2(width.x, -width.y) * 0.5f;	
-
-	glEnable(GL_BLEND);
-	glBlendFunc (GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4f(0.4f, 0.4f, 0.4f, 0.4f);
-	glBegin(GL_POLYGON);
-	glVertex2f( p1.x, p1.y);
-	glVertex2f( p2.x, p2.y);
-	glVertex2f(-p1.x,-p1.y);
-	glVertex2f(-p2.x,-p2.y);
-	glEnd();
-	glDisable(GL_BLEND);
-
-	glColor3f(0.65f, 0.65f, 0.65f);
-	glBegin(GL_LINE_LOOP);
-	glVertex2f( p1.x, p1.y);
-	glVertex2f( p2.x, p2.y);
-	glVertex2f(-p1.x,-p1.y);
-	glVertex2f(-p2.x,-p2.y);
-	glEnd();
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glPopMatrix();
+  glPushMatrix();
+  glTranslatef(body->position.x, body->position.y, 0.0f);
+  Mat2 Rot(body->orientation);
+  Vec2 p1 = Rot * width * 0.5f;
+  Vec2 p2 = Rot * Vec2(width.x, -width.y) * 0.5f;	
+  
+  glEnable(GL_BLEND);
+  glBlendFunc (GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+  glColor4f(0.4f, 0.4f, 0.4f, 0.4f);
+  glBegin(GL_POLYGON);
+  glVertex2f( p1.x, p1.y);
+  glVertex2f( p2.x, p2.y);
+  glVertex2f(-p1.x,-p1.y);
+  glVertex2f(-p2.x,-p2.y);
+  glEnd();
+  glDisable(GL_BLEND);
+  
+  glColor3f(0.65f, 0.65f, 0.65f);
+  glBegin(GL_LINE_LOOP);
+  glVertex2f( p1.x, p1.y);
+  glVertex2f( p2.x, p2.y);
+  glVertex2f(-p1.x,-p1.y);
+  glVertex2f(-p2.x,-p2.y);
+  glEnd();
+  glColor3f(1.0f, 1.0f, 1.0f);
+  glPopMatrix();
 }
 
 
 
 void DrawPoint(const Vec2& p, const int& cases, const int& size)
 {
-	switch (cases)
-	{
-		case 0: glColor3f(1.0f, 0.0, 0.0f); break;
-		case 1: glColor3f(1.0f, 1.0, 0.0f); break;
-		case 2: glColor3f(0.0f, 1.0, 1.0f); break;
-	}
-	glPointSize(size);	
-	glBegin(GL_POINTS);
-	glVertex2f(p.x, p.y);
-	glEnd();
-	glColor3f(1.0f, 1.0f, 1.0f);
+  switch (cases)
+  {
+    case 0: glColor3f(1.0f, 0.0f, 0.0f); break;
+    case 1: glColor3f(1.0f, 1.0f, 0.0f); break;
+    case 2: glColor3f(0.0f, 1.0f, 1.0f); break;
+  }
+  glPointSize(size);	
+  glBegin(GL_POINTS);
+  glVertex2f(p.x, p.y);
+  glEnd();
+  glColor3f(1.0f, 1.0f, 1.0f);
 }
 
 
 
 void DrawLine(const Vec2& p1, const Vec2& p2)
 {
-	glLineWidth(1.0);
-	glColor3f(1.0f, 0.0, 0.0f);
-	glBegin(GL_LINES);
-	glVertex2f(p1.x, p1.y);
-	glVertex2f(p2.x, p2.y);
-	glEnd();
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glLineWidth(1);
+  glLineWidth(1.0);
+  glColor3f(1.0f, 0.0, 0.0f);
+  glBegin(GL_LINES);
+  glVertex2f(p1.x, p1.y);
+  glVertex2f(p2.x, p2.y);
+  glEnd();
+  glColor3f(1.0f, 1.0f, 1.0f);
+  glLineWidth(1);
 }

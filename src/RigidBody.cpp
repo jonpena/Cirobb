@@ -9,46 +9,45 @@
 **************************************************************************/
 
 
-#include "RigidBody.h"
 #include "Shape.h"
 
 
 RigidBody::RigidBody(Shape& shape, const Vec2& _position, const real& _orientation)
 {
-	position = _position; 
-	orientation = _orientation;
-	this->shape = shape.newShape();
-	this->shape->body = this;
+  position = _position; 
+  orientation = _orientation;
+  this->shape = shape.newShape();
+  this->shape->body = this;
 }
 
 
-//Method that sets rigid body values to Dynamic
+// Method that sets rigid body values to Dynamic
 void RigidBody::Dynamic(const real& density)
 {
-	this->angularVelocity = 0.0f;
-	this->torque = 0.0f;
-	this->velocity.SetZero();
-	this->force.SetZero();
-	this->friction = 0.3f;        // Range[0..1]  
-	this->restitution = 0.3f;     // Range[0..1] Relatively Stable up to 0.85f 
-	this->angularDamping = 0.02f; // Range[0..1]
-	this->linearDamping = 0.0f;   // Range[0..1]
-	this->gravityScale = 1.0f;    // Range[0..1]
-	this->shape->CalculateMassInertia(density);
+  this->angularVelocity = 0.0f;
+  this->torque = 0.0f;
+  this->velocity.SetZero();
+  this->force.SetZero();
+  this->friction = 0.3f;        // Range[0..1]  
+  this->restitution = 0.3f;     // Range[0..1] 
+  this->angularDamping = 0.02f; // Range[0..1]
+  this->linearDamping = 0.0f;   // Range[0..1]
+  this->gravityScale = 1.0f;    // Range[0..1]
+  this->shape->CalculateMassInertia(density);
 }
 
 
-//Method that sets rigid body values to static
+// Method that sets rigid body values to static
 void RigidBody::Static(void)
 {
-	this->angularVelocity = 0.0f;
-	this->torque = 0.0f;
-	this->velocity.SetZero();
-	this->force.SetZero();
-	this->friction = 1.0f;       // Range[0..1]
-	this->restitution = 0.0f;    // Range[0..1] Relatively Stable up to 0.85f 
-	this->angularDamping = 0.0f; // Range[0..1]
-	this->linearDamping  = 0.0f; // Range[0..1]
-	this->gravityScale   = 0.0f; // Range[0..1]
-	this->shape->CalculateMassInertia(0);
+  this->angularVelocity = 0.0f;
+  this->torque = 0.0f;
+  this->velocity.SetZero();
+  this->force.SetZero();
+  this->friction = 1.0f;       // Range[0..1]
+  this->restitution = 0.0f;    // Range[0..1]
+  this->angularDamping = 0.0f; // Range[0..1]
+  this->linearDamping  = 0.0f; // Range[0..1]
+  this->gravityScale   = 0.0f; // Range[0..1]
+  this->shape->CalculateMassInertia(0);
 }
