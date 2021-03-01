@@ -30,7 +30,7 @@ Cirobb Engine V1.1.4 : https://youtu.be/j2p6qmOVA7M
 
 * <b>Read math and physics books and Game Physics</b> 
 
-If you want to better understand how the Physics Engine I recommend you learn a lot about linear Algebra, Numerical Analysis,
+If you want to better understand how the Physics Engine works I recommend you learn a lot about linear Algebra, Numerical Analysis,
 Calculus and Classical Physics. And I Also recommend you these slides and books:
 
 - <b> Erin Catto </b> for his incredible slides and knowledges about Game Physics:
