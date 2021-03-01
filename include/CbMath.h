@@ -17,7 +17,7 @@
 
 typedef float real;
 // Irrational Constant PI
-const real PI = 3.141592653589;
+const real PI = 3.141592653589f;
 // Conversion of Degrees to Radians
 const real RAD = PI / 180;
 //Conversion of Radians to Radians
@@ -44,119 +44,119 @@ Polar coordinates: Magnitude, Direction And Sense
 
 Cartesian Coordinates: The components of the vector in the Cartesian axes[x, y, z...n].
  
- This Project has extensive use of vectors so it's important to know that each operation does.
+This Project has extensive use of vectors so it's important to know that each operation does.
 ********************************************************************************************/
 struct Vec2
 {
-	real x, y; 
+  real x, y; 
 	
-	// Default Constructor 
-	Vec2(void) : x(0), y(0) {;}
+  // Default Constructor 
+  Vec2(void) : x(0), y(0) {;}
 
-	// Alternative Contructor
-	Vec2(real _x, real _y) : x(_x), y(_y) {;}
+  // Alternative Contructor
+  Vec2(real _x, real _y) : x(_x), y(_y) {;}
 	
-	//SetS The Values of The Vector
-	void Set(const real& _x, const real& _y)
-	{
-		x = _x; y = _y;
-	}
+  // SetS The Values of The Vector
+  void Set(const real& _x, const real& _y)
+  {
+    x = _x; y = _y;
+  }
 
-	//Vector Magnitude --> Pythagoras Theorem |C| = sqrt(A^2 + B^2)
-	real Magnitude(void)
-	{
-		return sqrtf(x * x + y * y);
-	}
+  // Vector Magnitude --> Pythagoras Theorem |C| = sqrt(A^2 + B^2)
+  real Magnitude(void)
+  {
+    return sqrtf(x * x + y * y);
+  }
 	
-	//Vector Squared Magnitude -> Pythagoras Theorem C^2 = A^2 + B^2
-	real SquareMagnitude(void)  
-	{
-		return x * x + y * y;
-	}
+  // Vector Squared Magnitude -> Pythagoras Theorem C^2 = A^2 + B^2
+  real SquareMagnitude(void)  
+  {
+    return x * x + y * y;
+  }
 	
-	/*************************************************************************************
-	The Normalization of the vector is a very useful operation that gives us the unitary direction of the vector.
-	cos(x) = adyacent / hypotenuse = x / magnitude
-	sin(x) = opposite / hypotenusa = y / magnitude
-	*************************************************************************************/
-	Vec2 normalize(void)
-	{
-		real mag = Magnitude();
+  /*************************************************************************************
+  The Normalization of the vector is a very useful operation that gives us the unitary direction of the vector.
+  cos(x) = adyacent / hypotenuse = x / magnitude
+  sin(x) = opposite / hypotenusa = y / magnitude
+  *************************************************************************************/
+  Vec2 normalize(void)
+  {
+    real mag = Magnitude();
 
-		return mag ? *this * (1.0 / mag) : Vec2();
-	}
-	
-	// Adding A Vector
-	void operator += (const Vec2& v)
-	{
-		x += v.x; y += v.y;
-	}
-	
-	// Subtracting A vector
-	void operator -= (const Vec2& v)
-	{
-		x -= v.x;	y -= v.y;
-	}
+    return mag ? *this * (1.0f / mag) : Vec2();
+  }
 
-	// Multiplying Vector * Scalar
-	void operator *= (const real& s)
-	{
-		x *= s; y *= s;
-	}
+   // Adding A Vector
+  void operator += (const Vec2& v)
+  {
+    x += v.x; y += v.y;
+  }
+	
+  // Subtracting A vector
+  void operator -= (const Vec2& v)
+  {
+    x -= v.x; y -= v.y;
+  }
 
-	// Sum of Vectors
-	Vec2 operator + (const Vec2& v)
-	{
-		return Vec2(x + v.x, y + v.y);	
-	}
-		
-	// Subtraction of Vectors
-	Vec2 operator - (const Vec2& v)
-	{
-		return Vec2(x - v.x, y - v.y);
-	}
-	
-	// Negation of Vector
-	Vec2 operator - (void)
-	{
-		return Vec2(-x, -y);
-	}
-		
-	// Sets the components as Absolute values.
-	void SetAbs(void)
-	{
-		x = absf(x); y = absf(y);
-	}
-	
-	// Gets The Components in Absolute Value.
-	Vec2 GetAbs(void)
-	{
-		return Vec2(absf(x), absf(y));
-	}
-	
-	/****************************************************************************
-	One of the most important operations in the vectors is the dot product.
-	The dot product tells us how much the Vector 'A' is pointing over the Vector 'B'.
-	Avoid making expensive projections and calculating square roots.
-	This operation will be widely used both in collision detection and in physics.
+  // Multiplying Vector * Scalar
+  void operator *= (const real& s)
+  {
+    x *= s; y *= s;
+  }
 
-	If(x1 * x2 + y1 * y2 == 0) Then the vectors are perpendicular. Rigth Angle.
-	If(x1 * x2 + y1 * y2 >  0) Then the vectors point in the same direction. Acute. 
-	If(x1 * x2 + y1 * y2 <  0) Then the vectors point in the opposite direction. Obtuse. 
-	*****************************************************************************/
-	real operator * (const Vec2 &v)
-	{
-		return (x * v.x + y * v.y);
-	}
+  // Sum of Vectors
+  Vec2 operator + (const Vec2& v)
+  {
+    return Vec2(x + v.x, y + v.y);	
+  }
+  	
+  // Subtraction of Vectors
+  Vec2 operator - (const Vec2& v)
+  {
+    return Vec2(x - v.x, y - v.y);
+  }
 	
-	// Vector Product * Scalar
-	Vec2 operator * (const real& s)
-	{
-		return Vec2 (x * s, y * s);
-	}
+  // Negation of Vector
+  Vec2 operator - (void)
+  {
+    return Vec2(-x, -y);
+  }
+  	
+  // Sets the components as Absolute values.
+  void SetAbs(void)
+  {
+    x = absf(x); y = absf(y);
+  }
+  
+  // Gets The Components in Absolute Value.
+  Vec2 GetAbs(void)
+  {
+    return Vec2(absf(x), absf(y));
+  }
 	
-	// Sets the Components of the vector equal to Zero
-	void SetZero(void) {x = y = 0.0f;}
+  /****************************************************************************
+  One of the most important operations in the vectors is the dot product.
+  The dot product tells us how much the Vector 'A' is pointing over the Vector 'B'.
+  Avoid making expensive projections and calculating square roots.
+  This operation will be widely used both in collision detection and in physics.
+  
+  If(x1 * x2 + y1 * y2 == 0) Then the vectors are perpendicular. Rigth Angle.
+  If(x1 * x2 + y1 * y2 >  0) Then the vectors point in the same direction. Acute. 
+  If(x1 * x2 + y1 * y2 <  0) Then the vectors point in the opposite direction. Obtuse. 
+  *****************************************************************************/
+  real operator * (const Vec2 &v)
+  {
+    return (x * v.x + y * v.y);
+  }
+  
+  // Vector Product * Scalar
+  Vec2 operator * (const real& s)
+  {
+    return Vec2 (x * s, y * s);
+  }
+  
+  // Sets the Components of the vector equal to Zero
+  void SetZero(void) {x = y = 0.0f;}
 };
 
 
@@ -172,7 +172,7 @@ If(x1 * x2 + y1 * y2 <  0) Then the vectors point in the opposite direction. Obt
 *****************************************************************************/
 inline real Dot(const Vec2 &v1, const Vec2& v2)
 {
-	return v1.x * v2.x + v1.y * v2.y;
+  return v1.x * v2.x + v1.y * v2.y;
 }
 
 /****************************************************************************
@@ -195,13 +195,13 @@ The function was defined to go counterclockwise.
 ****************************************************************************/
 inline real Cross(const Vec2& v1, const Vec2& v2)
 {
-	return v1.x * v2.y - v1.y * v2.x;
+  return v1.x * v2.y - v1.y * v2.x;
 }
 
 // Cross Product between Vector and Scalar - Counterclockwise Direction
 inline Vec2 Cross(const Vec2& v, const real& s)
 {
-	return Vec2(s * v.y, -s * v.x);
+  return Vec2(s * v.y, -s * v.x);
 }
 
 // Function to limit the minimum and maximum value of the variable
@@ -209,7 +209,7 @@ inline real Clamp(const real& min, const real& max, const real& v)
 {
   if (v < min) return min;
   if (v > max) return max;
-	return v;
+  return v;
 }
 
 
@@ -240,65 +240,66 @@ class Mat2
 {
 private:
 	
-	real m00, m01;
-	real m10, m11;
+  real m00, m01;
+  real m10, m11;
 
 public:
 
-	// Default Constructor
-	Mat2() : m00(0.0f), m01(0.0f), m10(0.0f), m11(0.0f) {;}
-
-	// Initialized Constructor with radian
-	Mat2(const real& rad)
-	{
-		m00 =  cosf(rad);  m01 = -sinf(rad);
-		m10 = -m01;        m11 = m00;       
-	}
+  // Default Constructor
+  Mat2() : m00(0.0f), m01(0.0f), m10(0.0f), m11(0.0f) {;}
+  
+  // Initialized Constructor with radian
+  Mat2(const real& rad)
+  {
+    m00 =  cosf(rad);  m01 = -sinf(rad);
+    m10 = -m01;        m11 = m00;       
+  }
 		
-	// Returns the Rotation Matrix (Radian - Distance)
-	Vec2 Rotate(const real& rad, const Vec2& v)
-	{
-		m00 = cosf(rad);  m01 = -sinf(rad);
-		m10 = -m01;       m11 = m00;
+  // Returns the Rotation Matrix (Radian - Distance)
+  Vec2 Rotate(const real& rad, const Vec2& v)
+  {
+    m00 = cosf(rad);  m01 = -sinf(rad);
+    m10 = -m01;       m11 = m00;
+  
+    return Vec2(v.x * m00 + v.y * m01, v.x * m10 + v.y * m11);
+  }
+  
+  // Returns the Rotation Matrix
+  Vec2 Rotate(const Vec2& v)
+  {
+    return Vec2(v.x * m00 + v.y * m01, v.x * m10 + v.y * m11);
+  }
 
-		return Vec2(v.x * m00 + v.y * m01, v.x * m10 + v.y * m11);
-	}
+  // Returns the Rotation Matrix
+  Vec2 operator * (const Vec2& v)
+  {
+    return Vec2(v.x * m00 + v.y * m01, v.x * m10 + v.y * m11);
+  }
+  
+  // Returns The Column 0 of The matrix
+  Vec2 Column0(void) {return Vec2(m00, m10);}
+  
+  // Returns The Column 1 Of The matrix
+  Vec2 Column1(void) {return Vec2(m01, m11);}
 
-	// Returns the Rotation Matrix
-	Vec2 Rotate(const Vec2& v)
-	{
-		return Vec2(v.x * m00 + v.y * m01, v.x * m10 + v.y * m11);
-	}
-
-	// Returns the Rotation Matrix
-	Vec2 operator * (const Vec2& v)
-	{
-		return Vec2(v.x * m00 + v.y * m01, v.x * m10 + v.y * m11);
-	}
-
-	// Returns The Column 0 of The matrix
-	Vec2 Column0(void) {return Vec2(m00, m10);}
-
-	// Returns The Column 1 Of The matrix
-	Vec2 Column1(void) {return Vec2(m01, m11);}
-
-	// Sets the transpose Matrix 
-	void Transpose(void) {real temp = m01; m01 = m10; m10 = temp;}
-
-	// Sets the Vector with Transpose Matrix
-	void SetTranspose(Vec2& v) 
-	{
-		real  x = v.x,  y = v.y;
-		v.x = x * m00 + y * m10;
-		v.y = x * m01 + y * m11;
-	}	
-
-	// Returns the transpose Matrix
-	Vec2 Transpose(const Vec2& v)
-	{
-		return Vec2(v.x * m00 + v.y * m10, v.x * m01 + v.y * m11);
-	}
+  // Sets the transpose Matrix 
+  void Transpose(void) {real temp = m01; m01 = m10; m10 = temp;}
+  
+  // Sets the Vector with Transpose Matrix
+  void SetTranspose(Vec2& v) 
+  {
+    real  x = v.x,  y = v.y;
+    v.x = x * m00 + y * m10;
+    v.y = x * m01 + y * m11;
+  }	
+  
+  // Returns the transpose Matrix
+  Vec2 Transpose(const Vec2& v)
+  {
+    return Vec2(v.x * m00 + v.y * m10, v.x * m01 + v.y * m11);
+  }
 };
+
 #endif
 
 
