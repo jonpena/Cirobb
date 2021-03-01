@@ -69,7 +69,7 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 	* Iterative Rigid Body Solvers 2013.
 
 
-- <b> Brian Vincent Mirtich </b> For introducing a different approach to Physics Game.
+- <b> Brian Vincent Mirtich </b> For introducing a different approach to Game Physics.
 
 	* Impulse-based Dynamic Simulation of Rigid Body Systems.
 
@@ -114,7 +114,7 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 	* Separating Axis Test (SAT) and Support Points in 2D.
 
 
-- <b> Books about physics and Collision Detection </b>: 
+- <b> Books about Game Physics and Collision Detection </b>: 
 
 	* Game Physics Pearls Gino van den Bergen and Dirk Gregorius.
 
