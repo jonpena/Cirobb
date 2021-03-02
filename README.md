@@ -120,7 +120,24 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 
 	* Real-Time Collision Detection Christer Ericson.
 
+<h3> Future </h3>
+
+Cirobb is a Physics Engine that is almost finished. Since the main idea of Cirobb is to create 
+a simple introduction to 2D rigid body physics engines few modifications will be added to keep things Simple.
+
+The Following Features will be added to the Cirobb Engine in the future:
+
+* Direct Solver to improve the convergence of the Velocity Solver.
+
+* The Distance Constraint. (Optional?)
+
+* More internal documentation to improve understanding of the code.
+
+* Modification of the .h and .cpp files to Improve understanding of the Code.
+
+* Separate the graphics Library of the Physics Engine.
+
 <h3> About the Author </h3>
 
-Hi, my name is Jonathan Peña, I'm from Venezuela. I really like physics in Videogames,
+Hi, my name is <b>Jonathan Peña</b>, I'm from Venezuela. I really like physics in Videogames,
 I like the Dynamics of Physics Engines and how the equations predict movement. You can contact me here: granj215@gmail.com.
