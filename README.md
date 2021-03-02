@@ -24,7 +24,7 @@ I recommend you use better <b>Box2D</b> which in my opinion I think it's the bes
 
 <h3>Demo Video</h3>
 
-Cirobb Engine V1.1.4 : <a target="_blank">https://youtu.be/j2p6qmOVA7M</a>
+Cirobb Engine V1.1.4 : <a href="https://youtu.be/j2p6qmOVA7M" target="_blank">https://youtu.be/j2p6qmOVA7M</a>
 
 <h3>Books and Resources</h3>
 
