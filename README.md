@@ -14,18 +14,18 @@ If you want to make more complex simulations with many Constraints and Shapes.
 I recommend you use better <b>Box2D</b> which in my opinion I think it's the best 2D open source physics engine that exists.
 
 
-<h3> Images </h3>
+<h2> Images </h2>
 
 ![img1](/images/img1.gif?raw=true)
 ![img2](/images/img2.gif?raw=true)
 ![img3](/images/img3.gif?raw=true)
 
 <br>
-<h3>Demo Video</h3>
+<h2>Demo Video</h2>
 
 Cirobb Engine V1.1.4 : https://youtu.be/j2p6qmOVA7M
 
-<h3>Books and Resources</h3>
+<h2>Books and Resources</h2>
 
 * <b>Read math and physics books and Game Physics</b> 
 
@@ -119,7 +119,7 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 
 	* Real-Time Collision Detection Christer Ericson.
 
-<h3> Future </h3>
+<h2> Future </h2>
 
 Cirobb is a Physics Engine that is almost finished. Since the main idea of Cirobb is to create 
 a simple introduction to 2D rigid body physics engines few modifications will be added to keep things Simple.
@@ -136,7 +136,7 @@ The Following Features will be added to the Cirobb Engine in the future:
 
 * Separate the graphics Library of the Physics Engine.
 
-<h3> About the Author </h3>
+<h2> About the Author </h2>
 
 Hi, my name is <b>Jonathan Peña</b>, I'm from Venezuela. I really like physics in Videogames,
 I like the Dynamics of Physics Engines and how the equations predict movement. You can contact me here: granj215@gmail.com.
