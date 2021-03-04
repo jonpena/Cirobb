@@ -2,11 +2,11 @@
 
 " Tested in Visual Studio 2012"
 
-<b>Cirobb</b> is a <b>2d Physics Engine</b> inspired by box2d lite that was created with the purpose of helping people who are starting
+<b>Cirobb</b> is a <b>2D Rigid Body Physics Engine</b> inspired by box2d lite that was created with the purpose of helping people who are starting
 in this wonderful world of physics for Videogames. The Engine uses the Erin Catto contact persistence algorithm
 and it's implementation of the <b>PGS</b> (Projected Gauss Seidel) solver to solve the MLCP very well known as a <b>SI</b> (Sequential Impulse).
-The main idea of this project is to explain in more detail how physics engines works,
-I must clarify that not all physics engines use the same approach. This engine follows the dynamics of impulses.
+The main Idea of this project is to explain in more detail how physics engines works,
+I must clarify that not all physics engines use the same approach. This engine follows the Impulse Based Dynamics.
 
 
 
@@ -42,7 +42,7 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 	
 	* Numerical_Methods.
 	
-	* Continuous Detection Collision.
+	* Continuous Collision Detection.
 	
 	* Understanding Constraints. 
 
@@ -121,7 +121,7 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 
 <h2> Future </h2>
 
-Cirobb is a Physics Engine that is almost finished. Since the main idea of Cirobb is to create 
+Cirobb is a Physics Engine that is almost finished. Since the main idea is to create 
 a simple introduction to 2D rigid body physics engines few modifications will be added to keep things Simple.
 
 The Following Features will be added to the Cirobb Engine in the future:
