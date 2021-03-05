@@ -19,10 +19,10 @@
 
 struct Contact
 {
-  Contact(void) : Pn(0.0f), Pt(0.0f), bias(0.0f), restitution(0.0f), oldPoint(FLT_MAX, FLT_MAX) {;}
+  Contact(void) : Pn(0.0f), Pt(0.0f), bias(0.0f), restitution(0.0f), warmPoint(FLT_MAX, FLT_MAX) {;}
   
   Vec2 position; // Position of Contact Point
-  Vec2 oldPoint; // Position of Old Contact Point
+  Vec2 warmPoint; // Position of Warm Contact Point
   real penetration; // Penetration Depth
   real Pn; // Accumulated Normal Impulse
   real Pt; // Accumulated Tangent Impulse
