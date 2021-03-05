@@ -152,7 +152,6 @@ void OBBToCircle(Manifold& m, Shape* A, Shape* B)
 {
   m.A = B->body; 
   m.B = A->body; 
-  
   CircleToOBB(m, B, A);
 }
 
