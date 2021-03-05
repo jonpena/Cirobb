@@ -52,7 +52,7 @@ void Manifold::Update(Contact* newContacts, const int& numNewContacts)
       if(j + 1 == numContacts)
       {
       	mergedContacts[i] = newContacts[i];
-        mergedContacts[i].oldPoint = mergedContacts[i].position;
+        mergedContacts[i].warmPoint = mergedContacts[i].position;
       }
     }			
   }
