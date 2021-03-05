@@ -98,7 +98,7 @@ void Scene::Step(const real& dt)
   for(auto b : bodies)
   {
     b->velocity += (b->force * b->invm + gravity * b->gravityScale) * dt; // v = v + Fext * M⁻¹ * Δt
-    b->angularVelocity += b->torque * b->invI * dt;	                      // ω = ω + τext * I⁻¹ * Δt
+    b->angularVelocity += b->torque * b->invI * dt;                       // ω = ω + τext * I⁻¹ * Δt
     b->velocity *= pow(0.97f, b->linearDamping);                          // min = 0.97f and max = 1;
     b->angularVelocity *= pow(0.97f, b->angularDamping);                  // min = 0.97f and max = 1;
   }
