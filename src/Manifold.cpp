@@ -90,14 +90,14 @@ This PreStep Method calculates the normal and tangent inverse effective mass of 
 
 Equation: A = J * M⁻¹ * Jt
 
-* Jt = Jacobian tramsposed
+* Jt = transposed Jacobian
 
 * Only in 2D the inverse effective mass is =
 
-                J                                   M⁻¹                     Jt
-[nx, ny, n X ra, -nx, -ny, -n X rb] |m1⁻¹  0      0     0     0       0| |n     x|
-                                    |0     m1⁻¹   0     0     0       0| |ny     |
-                                    |0     0      I1⁻¹  0     0       0| |n X ra |  
+                 J                                M⁻¹                       Jt
+[nx, ny, n X ra, -nx, -ny, -n X rb] |m1⁻¹  0      0     0     0       0| | nx    |
+                                    |0     m1⁻¹   0     0     0       0| | ny    |
+                                    |0     0      I1⁻¹  0     0       0| | n X ra|  
                                     |0     0      0     m2⁻¹  0       0| |-nx    |  
                                     |0     0      0     0     m2⁻¹    0| |-ny    |    
                                     |0     0      0     0     0    I2⁻¹| |-n X rb|
