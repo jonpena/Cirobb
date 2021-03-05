@@ -347,7 +347,7 @@ static void Update(void)
       for(int i = 0; i < temp->second.numContacts; i++)
       {
         DrawPoint(temp->second.contacts[i].position, 2, 3);
-        DrawPoint(temp->second.contacts[i].oldPoint, 1, 4);
+        DrawPoint(temp->second.contacts[i].warmPoint, 1, 5);
       }
     }
   }
