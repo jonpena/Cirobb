@@ -61,7 +61,7 @@ void CircleToCircle(Manifold& m, Shape* c1, Shape* c2)
   if(magnitude > radius * radius) return;
   
   // Magnitude |c2 - c1|
-  magnitude = std::sqrt(magnitude);
+  magnitude = sqrtf(magnitude);
   
   m.numContacts = 1;
   m.contacts[0].penetration = magnitude - radius;
