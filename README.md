@@ -1,6 +1,6 @@
 <h2> ♥️ Please Help me with a ⭐ </h2>
 
-# Cirobb V1.1.7
+# Cirobb V1.1.8
 
 <b>Cirobb</b> is a <b>2D Rigid Body Physics Engine</b> inspired by <b>Box2D Lite</b> that was created with the purpose of helping people who are starting
 in this wonderful world of physics for Videogames. The Engine uses the Erin Catto's Contact Persistence Algorithm
