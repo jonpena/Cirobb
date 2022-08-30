@@ -19,10 +19,6 @@ I recommend you use better <b>Box2D</b> which in my opinion I think it's the bes
 
 ![img1](/images/img1.gif?raw=true)
 ![img3](/images/img3.gif?raw=true)
-
-<a data-flickr-embed="true" href="https://www.flickr.com/photos/196387025@N03/52322307230/in/dateposted-public/" title="gif1"><img src="https://live.staticflickr.com/65535/52322307230_4946248c59_o.gif" width="640" height="480" alt="gif1"></a>
-
-<a data-flickr-embed="true" href="https://www.flickr.com/photos/196387025@N03/52321865771/in/dateposted-public/" title="gif2"><img src="https://live.staticflickr.com/65535/52321865771_a1d81d37ca_o.gif" width="640" height="480" alt="gif2">
 		
 <br>
 
