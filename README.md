@@ -131,8 +131,6 @@ The Following Features will be added to the Cirobb Engine in the future:
 
 * The Distance Constraint. (Optional?)
 
-* More internal documentation to improve understanding of the code.
-
 * Add Collision Detection against convex polygons.
 
 * Change Distance-Based Contact Points to Feature-Based Contact Points
