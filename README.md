@@ -137,4 +137,5 @@ The Following Features will be added to the Cirobb Engine in the future:
 
 ## About the Author
 
-Hi, my name is <b>Jonathan Peña</b>, I'm from Venezuela. I really like physics engines in Videogames, You can contact me here: granj215@gmail.com.
+Hi, my name is **Jonathan Peña** I'm from Venezuela. I really like **Physics engines** in Videogames,\
+You can contact me here: granj215@gmail.com.
