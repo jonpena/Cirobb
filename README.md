@@ -1,4 +1,4 @@
-<h2> ♥️ Please Help me with a ⭐ </h2>
+<h2> ♥️ Please help with a Star on Github ⭐ </h2>
 
 # Cirobb V1.1.8
 
