@@ -15,7 +15,7 @@ If you want to make more complex simulations with many Constraints and Shapes.
 I recommend you use better <b>Box2D</b> which in my opinion I think it's the best 2D open source physics engine that exists.
 
 
-## Images
+## Captures
 
 ![img1](/images/img1.gif?raw=true)
 ![img3](/images/img3.gif?raw=true)
