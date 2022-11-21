@@ -22,6 +22,10 @@ I recommend you use better <b>Box2D</b> which in my opinion I think it's the bes
 		
 <br>
 
+## Cirobb with Webassembly
+
+Cirobb Engine V1.1.8 : https://jonpena.github.io/Cirobb-wasm
+
 ## Demo Video
 
 Cirobb Engine V1.1.4 : https://youtu.be/j2p6qmOVA7M
