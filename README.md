@@ -23,9 +23,24 @@ I recommend you use better <b>Box2D</b> which in my opinion I think it's the bes
 
 Cirobb Engine V1.1.8 : https://jonpena.github.io/Cirobb-wasm
 
-## Demo Video
+## Demo Youtube Video
 
 Cirobb Engine V1.1.4 : https://youtu.be/j2p6qmOVA7M
+
+## Future changes
+
+Cirobb is a Physics Engine that is almost finished. Since the main idea is to create 
+a simple introduction to 2D rigid body physics engines few modifications will be added to keep things Simple.
+
+The Following Features will be added to the Cirobb Engine in the future:
+
+* Direct Solver to improve the convergence of the Velocity Solver.
+
+* The Distance Constraint. (Optional?)
+
+* Add Collision Detection against convex polygons.
+
+* Change Distance-Based Contact Points to Feature-Based Contact Points
 
 <h2>Books and Resources</h2>
 
@@ -118,23 +133,3 @@ Calculus and Classical Physics. And I Also recommend you these slides and books:
 	* Game Physics Pearls Gino van den Bergen and Dirk Gregorius.
 
 	* Real-Time Collision Detection Christer Ericson.
-
-## Future
-
-Cirobb is a Physics Engine that is almost finished. Since the main idea is to create 
-a simple introduction to 2D rigid body physics engines few modifications will be added to keep things Simple.
-
-The Following Features will be added to the Cirobb Engine in the future:
-
-* Direct Solver to improve the convergence of the Velocity Solver.
-
-* The Distance Constraint. (Optional?)
-
-* Add Collision Detection against convex polygons.
-
-* Change Distance-Based Contact Points to Feature-Based Contact Points
-
-## About the Author
-
-Hi, my name is **Jonathan Peña** I'm from Venezuela. I really like **Physics engines** in Videogames,\
-You can contact me here: granj215@gmail.com.
