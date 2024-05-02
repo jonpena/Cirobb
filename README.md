@@ -42,10 +42,7 @@ The Following Features will be added to the Cirobb Engine in the future:
 
 * Change Distance-Based Contact Points to Feature-Based Contact Points
 
-<h2>Books and Resources</h2>
-
-If you want to better understand how the Physics Engine works I recommend you learn a lot about linear Algebra, Numerical Analysis,
-Calculus and Classical Physics. And I Also recommend you these slides and books:
+<h2>Books and Resources to learn about physics engines</h2>
 
 - <b> Erin Catto </b> for his incredible slides and knowledges about Game Physics:
 
