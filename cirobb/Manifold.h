@@ -1,5 +1,5 @@
 ﻿/*************************************************************************
-* Copyright (c) 2019-2021 Jonathan Peña
+* Copyright (c) 2019-2025 Jonathan Peña
 * Permission to use, copy, modify, distribute and sell this software
 * and its documentation for any purpose is hereby granted without fee,
 * provided that the above copyright notice appear in all copies.
@@ -17,7 +17,7 @@
 #include "Shape.h"
 
 
-static real k__distance = 0.005f;
+static real K_TOLERANCE = 0.005f;
 
 
 struct Contact

@@ -1,5 +1,5 @@
 ﻿/*************************************************************************
-* Copyright (c) 2019-2021 Jonathan Peña
+* Copyright (c) 2019-2025 Jonathan Peña
 * Permission to use, copy, modify, distribute and sell this software
 * and its documentation for any purpose is hereby granted without fee,
 * provided that the above copyright notice appear in all copies.
@@ -32,15 +32,14 @@ This can be achieved with a distance heuristic, id, Etc. Reference Erin Catto
 *****************************************************************************************************************/
 void Manifold::Update(Contact* newContacts, const int& numNewContacts)
 {
-  const real k_tolerance = k__distance;
-  
+ 
   Contact mergedContacts[2];
   
   for (int i = 0; i < numNewContacts; i++)
   {
     for(int j = 0; j < numContacts; j++)
     {
-      if((newContacts[i].position - contacts[j].position).SquareMagnitude() < k_tolerance)
+      if((newContacts[i].position - contacts[j].position).SquareMagnitude() < K_TOLERANCE)
       {
       	mergedContacts[i] = newContacts[i];
       	mergedContacts[i].Pn = contacts[j].Pn;
