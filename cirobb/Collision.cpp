@@ -1,5 +1,5 @@
 ﻿/*************************************************************************
-* Copyright (c) 2019-2021 Jonathan Peña
+* Copyright (c) 2019-2025 Jonathan Peña
 * Permission to use, copy, modify, distribute and sell this software
 * and its documentation for any purpose is hereby granted without fee,
 * provided that the above copyright notice appear in all copies.
@@ -261,30 +261,30 @@ void OBBToOBB(Manifold& m, Shape* b1, Shape* b2)
   
   int side = v1[axisIndex] < v2[axisIndex] ? 1 : -1;
   
-  Vec2 normal = axes[axisIndex] * real(side); // local space normal 
+  Vec2 normal = axes[axisIndex] * real(side); //Localspace normal 
   
   if(axisIndex < 2)
   {
     m.A = b2->body; m.B = b1->body;
     if(side == -1) axisIndex += 2;
     ref[0] = vertsA[axisIndex];
-    ref[1] = axisIndex < 3 ? vertsA[axisIndex + 1] : vertsA[0];
+    ref[1] = vertsA[(axisIndex + 1) % 4];
     axisIndex = FindIncidentEdgeIndex(normal * axes[2], normal * axes[3]);
     inc[0] = vertsB[axisIndex];
-    inc[1] = axisIndex < 3 ? vertsB[axisIndex + 1] : vertsB[0];
+    inc[1] = vertsB[(axisIndex + 1) % 4];
     normal *= -1;
   }
   else
   {
     if(side == -1) axisIndex -= 2;
     ref[0] = vertsB[axisIndex];
-    ref[1] = axisIndex < 3 ? vertsB[axisIndex + 1] : vertsB[0];
+    ref[1] = vertsB[(axisIndex + 1) % 4];
     axisIndex = FindIncidentEdgeIndex(normal.x, normal.y);
     inc[0] = vertsA[axisIndex];
-    inc[1] = axisIndex < 3 ? vertsA[axisIndex + 1] : vertsA[0];
+    inc[1] = vertsA[(axisIndex + 1) % 4];
   }
   
-  m.normal = Rot2.Transpose(normal); // world space normal
+  m.normal = Rot2.Transpose(normal); //Worldspace normal
   
   Vec2 ref0Point = Rot2.Transpose(ref[0]);
   
