@@ -1,5 +1,5 @@
 /*************************************************************************
-* Copyright (c) 2019-2021 Jonathan Peña
+* Copyright (c) 2019-2025 Jonathan Peña
 * Permission to use, copy, modify, distribute and sell this software
 * and its documentation for any purpose is hereby granted without fee,
 * provided that the above copyright notice appear in all copies.
@@ -20,9 +20,10 @@ namespace
 	int height = 700;
 	real zoom = 10;
 
-	int numScene = 1;
+	int numScene = 0;
+  int lastNumberScene = 0;
 	real viewScale = 0;
-	bool pause = false, InitScene = true;	
+  bool pause = false;
 	real timeStep = 1.0f / 60.0f;
 	Vec2 gravity(0.0f, -10.0f);
 
@@ -45,20 +46,20 @@ namespace
 
 char* SceneStrings[] = 
 {
-  "Scene 1-7: Collision Detection", 
-  "Scene 2-7: Low Friction",
-  "Scene 3-7: Stacking Boxes & Circles",
-  "Scene 4-7: Pyramid", 
-  "Scene 5-7: Angry Bird Style",
-  "Scene 6-7: Rotary Box",
-  "Scene 7-7: Free Style"
+  "Collision Detection (1)", 
+  "Low Friction (2)",
+  "Stacking Boxes & Circles (3)",
+  "Pyramid (4)", 
+  "Buildings (5)",
+  "Rotary Box (6)",
+  "Improvisational Mode (7)"
 };
 
 char* PositionStrings[] = 
 {
-  "Position Correction: None",
-  "Position Correction: Baumgarte Stabilization", 
-  "Position Correction: Non-Linear-Gauss-Seidel"
+  "None",
+  "Baumgarte Stabilization", 
+  "Non-Linear-Gauss-Seidel"
 };
 
 static void glfwErrorCallback(int error, const char* description)
@@ -241,6 +242,7 @@ static void RotaryBox(void)
   
 	Mat2 rot1(w1->orientation);
 	Mat2 rot2(w3->orientation);
+
   
   w1->angularVelocity = w2->angularVelocity = angularVelocity; 
   w3->angularVelocity = w4->angularVelocity = angularVelocity;
@@ -273,34 +275,34 @@ static void FreeStyle(void)
 
 static void (*TestScene[])(void) = {LowFriction, Stacking, Pyramid, AngryBirds, RotaryBox, FreeStyle};
 
-
-
 static void Start(void)
 {
-  if(InitScene)
+  if(numScene != lastNumberScene)
   {
-    InitScene = false;
+    lastNumberScene = numScene;
     
     scene.Clear();
     
 		sPrincipal->Dynamic(0.5f);
     
     scene.Add(sPrincipal);
+
+    printf("%d", numScene);
     
-    if(numScene == 6) // Special Scene 6
+    if(numScene == 5) //Special Scene 6 because we dont support distance constraint
     {
       w1->Static();
       w2->Static();
       w3->Static();
       w4->Static();
-      
+
       scene.Add(w1);
       scene.Add(w2);
       scene.Add(w3);
       scene.Add(w4);
     }
     
-    if(numScene > 1) TestScene[numScene - 2]();
+    if(numScene > 0) TestScene[numScene - 1]();
   }
 }
 
@@ -324,8 +326,7 @@ static void Keyboard(GLFWwindow* window, int key, int scancode, int action, int 
 		case '5':
 		case '6':
 		case '7':
-		InitScene = true;
-    numScene = int(key) - 48; 
+      numScene = (int(key) - 48) - 1;
 		Start();
 		break;
 
@@ -419,7 +420,7 @@ int main(int args, char** argv)
 		return -1;
 	}
 
-	mainWindow = glfwCreateWindow(width, height, "Cirobb 1.1.7", NULL, NULL);
+	mainWindow = glfwCreateWindow(width, height, "Cirobb 1.1.10", NULL, NULL);
 
 	if(mainWindow == NULL) {
 		fprintf(stderr, "Failed to open GLFW mainWindow.\n");
@@ -475,24 +476,34 @@ int main(int args, char** argv)
 		ImGui::PopStyleColor();
 		ImGui::End();
 
-		char buffer[64];
-		sprintf(buffer, SceneStrings[numScene - 1]);
-		DrawText(4, 5, buffer);
+    // Fijar posición en esquina superior izquierda
+    ImGui::SetNextWindowPos(ImVec2(8.0f, 8.0f), ImGuiCond_Always);
 
-		sprintf(buffer, PositionStrings[Scene::CorrectionType]);
-		DrawText(4, 35, buffer);
+    // Crear ventana de ImGui para los controles
+    ImGui::Begin("Controls", nullptr,
+      ImGuiWindowFlags_AlwaysAutoResize |
+      ImGuiWindowFlags_NoMove |          // Previene que el usuario mueva la ventana
+      ImGuiWindowFlags_NoTitleBar);      // Elimina la barra de título para un look más limpio
+  
+    ImGui::Combo("Scenes", &numScene, SceneStrings, IM_ARRAYSIZE(SceneStrings));
+    ImGui::Combo("Position", &Scene::CorrectionType, PositionStrings, IM_ARRAYSIZE(PositionStrings));
 
-		sprintf(buffer, "(P)ause %s", pause ? "TRUE" : "FALSE");
-		DrawText(4, 65, buffer);
+    // Checkbox para pause
+    ImGui::Checkbox("(P)ause", &pause);
 
-		if(numScene == 1) {
+    ImGui::End();
+
+		if(numScene == 0) {
 			DetectionCollision(sPrincipal);
 		}
+
+    if (numScene != lastNumberScene) Start();
+
 		else
 		{
 			if(!pause) scene.Step(timeStep);
 
-			if(numScene == 6) RotaryBox();
+			if(numScene == 5) RotaryBox();
 
 			for(RigidBody* temp : scene.bodies) DrawShape(temp->shape);
     
