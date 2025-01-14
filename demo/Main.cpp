@@ -46,13 +46,13 @@ namespace
 
 char* SceneStrings[] = 
 {
-  "Collision Detection (1)", 
-  "Low Friction (2)",
-  "Stacking Boxes & Circles (3)",
-  "Pyramid (4)", 
-  "Buildings (5)",
-  "Rotary Box (6)",
-  "Improvisational Mode (7)"
+  "Collision Detection", 
+  "Low Friction",
+  "Stacking Boxes & Circles",
+  "Pyramid", 
+  "Buildings",
+  "Rotary Box",
+  "Improvisational Mode"
 };
 
 char* PositionStrings[] = 
@@ -375,14 +375,17 @@ static void Keyboard(GLFWwindow* window, int key, int scancode, int action, int 
 }
 
 
-static void MouseMotion(GLFWwindow*, double x, double y)
+static void MouseMotion(GLFWwindow* window, double x, double y)
 {
-	mouseX = ((real)x - width  * 0.5) *  viewScale;
-	mouseY = ((real)y - height * 0.5) * -viewScale;
+  mouseX = ((real)x - width * 0.5) * viewScale;
+  mouseY = ((real)y - height * 0.5) * -viewScale;
 
-	sPrincipal->position.Set(mouseX, mouseY);
-  sPrincipal->velocity.SetZero();
-  sPrincipal->angularVelocity = 0.0f;
+  if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+  {
+    sPrincipal->position.Set(mouseX, mouseY);
+    sPrincipal->velocity.SetZero();
+    sPrincipal->angularVelocity = 0.0f;
+  }
 }
 
 
