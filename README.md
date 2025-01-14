@@ -6,15 +6,6 @@
 
 Additionally, it features a straightforward 2D Collision Detection system that efficiently calculates Contact Points, Normal Direction, and Penetration depth. This project aims to provide a clear and detailed understanding of how physics engines work under the hood, making it an ideal learning resource for game developers.
 
-### Features:
-
-- Physical properties for bodies including:
-  - Restitution (bounciness)
-  - Friction
-- Supported shapes:
-  - Circles
-  - OBBs (Oriented Bounding Boxes)
-
 > 💡 For more complex simulations with multiple constraints and shapes, we recommend using **Box2D**, which is considered the best open-source 2D physics engine available.
 
 ## 📸 Captures
