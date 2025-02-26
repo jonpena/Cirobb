@@ -105,22 +105,6 @@ Additionally, it features a straightforward 2D Collision Detection system that e
 - Game Physics Pearls by Gino van den Bergen and Dirk Gregorius
 - Real-Time Collision Detection by Christer Ericson
 
-## ⭐ Support the Project
-
-<div align="center">
-
-### If you find this project helpful, please give it a star! ⭐
-
-<p align="center">
-  <a href="https://github.com/jonpena/Cirobb">
-    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Microsoft-Teams-Animated-Emojis/master/Emojis/Travel%20and%20places/Glowing%20Star.png" alt="Star this repo" width="100">
-  </a>
-</p>
-
-[![GitHub stars](https://img.shields.io/github/stars/jonpena/Cirobb.svg?style=social&label=Star&maxAge=2592000)](https://github.com/jonpena/Cirobb/stargazers/)
-
-</div>
-
 ## 📝 Note
 
 Cirobb is designed as an educational introduction to 2D physics engines. It intentionally maintains simplicity to facilitate learning and understanding of fundamental concepts.
