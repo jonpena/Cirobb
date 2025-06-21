@@ -1,17 +1,16 @@
 /*************************************************************************
-* Copyright (c) 2019-2025 Jonathan Peña
+* Copyright (c) 2019-2025 Jonathan Peï¿½a
 * Permission to use, copy, modify, distribute and sell this software
 * and its documentation for any purpose is hereby granted without fee,
 * provided that the above copyright notice appear in all copies.
-* Jonathan Peña makes no representations about the suitability 
+* Jonathan Peï¿½a makes no representations about the suitability 
 * of this software for any purpose.  
 * It is provided "as is" without express or implied warranty. 
 **************************************************************************/
 
 #include "../glad/glad.h"
-#include "../Cirobb/Scene.h"
+#include "../cirobb/Scene.h"
 #include "Render.h"
-
 namespace
 {
 	GLFWwindow* mainWindow = NULL;
@@ -35,13 +34,16 @@ namespace
 
 	RigidBody* sPrincipal = new RigidBody(cPrincipal, Vec2(0, 0), 0.0f); 
 
-	RigidBody* cLocal = new RigidBody(Circle(4.0f), Vec2(-5, 0), 0.0f);
-	RigidBody* bLocal = new RigidBody(OBB(9.0f, 6.0f), Vec2(5, 0), -PI / 15.0f);
+  Circle cShape(2.0f);
+  OBB bShape(9.0f, 6.0f);
+	RigidBody* cLocal = new RigidBody(cShape, Vec2(-5, 0), 0.0f);
+	RigidBody* bLocal = new RigidBody(bShape, Vec2(5, 0), -PI / 15.0f);
 
-	RigidBody* w1 = new RigidBody(OBB(1, 10), Vec2( 5, 0), 0);
-	RigidBody* w2 = new RigidBody(OBB(1, 10), Vec2(-5, 0), 0);
-	RigidBody* w3 = new RigidBody(OBB(1, 10), Vec2( 0, 5), PI * 0.5f);
-	RigidBody* w4 = new RigidBody(OBB(1, 10), Vec2( 0,-5), PI * 0.5f);
+  OBB ww(1, 10);
+	RigidBody* w1 = new RigidBody(ww, Vec2( 5, 0), 0);
+	RigidBody* w2 = new RigidBody(ww, Vec2(-5, 0), 0);
+	RigidBody* w3 = new RigidBody(ww, Vec2( 0, 5), PI * 0.5f);
+	RigidBody* w4 = new RigidBody(ww, Vec2( 0,-5), PI * 0.5f);
 }
 
 char* SceneStrings[] = 
@@ -97,7 +99,8 @@ static void DetectionCollision(RigidBody* p)
 
 static void LowFriction(void)
 {
-  RigidBody* b1 = new RigidBody(OBB(22.0f, 0.8f), Vec2(0.0f, -7.5f), 0.0f); 
+  OBB w1(22.0f, 0.8f);
+  RigidBody* b1 = new RigidBody(w1, Vec2(0.0f, -7.5f), 0.0f); 
   b1->Static();
   
   OBB w2(10.0, 0.6f);
@@ -111,11 +114,13 @@ static void LowFriction(void)
   RigidBody* b4 = new RigidBody(w2, Vec2(-5.0f, -3.5f), -15 * RAD); 
   b4->Static();
   
-  RigidBody* b5 = new RigidBody(Circle(0.5f), Vec2(8.72f, 5.32f), 0.0f); 
+  Circle c1(0.5f);
+  RigidBody* b5 = new RigidBody(c1, Vec2(8.72f, 5.32f), 0.0f); 
   b5->Dynamic(1.0f);
   b5->angularDamping = 0.1f;
   
-  RigidBody* b6 = new RigidBody(OBB(1.0f, 1.0f), Vec2(-9.7f, 5.7f), -15 * RAD);
+  OBB w3(1.0f, 1.0f);
+  RigidBody* b6 = new RigidBody(w3, Vec2(-9.7f, 5.7f), -15 * RAD);
   b6->Dynamic(1.0f);
   b6->friction = 0.01f; 
   
@@ -129,7 +134,8 @@ static void LowFriction(void)
     
 static void Stacking(void)
 {
-  RigidBody* b1 = new RigidBody(OBB(22.0f, 0.8f), Vec2(0.0f, -7.5f), 0.0f); 
+  OBB w1(22.0f, 0.8f);
+  RigidBody* b1 = new RigidBody(w1, Vec2(0.0f, -7.5f), 0.0f); 
   b1->Static();
   scene.Add(b1);
   
@@ -164,7 +170,8 @@ static void Stacking(void)
 
 static void Pyramid(void)
 {
-  RigidBody* b1 = new RigidBody(OBB(22.0f, 0.8f), Vec2(0, -7.5), 0.0f); 
+  OBB w1(22.0f, 0.8f);
+  RigidBody* b1 = new RigidBody(w1, Vec2(0, -7.5), 0.0f); 
   b1->Static();
   scene.Add(b1);
   
@@ -177,7 +184,8 @@ static void Pyramid(void)
       real x = (j * 2 + i - lv) * wh * 0.5f;
       real y = (i + 0.5f) * wh - 6.5f;
       
-      RigidBody* b2 = new RigidBody(OBB(wh, wh), Vec2(x, y) , 0); 
+      OBB obb(wh, wh);
+      RigidBody* b2 = new RigidBody(obb, Vec2(x, y) , 0); 
       b2->Dynamic(1.0f);
       scene.Add(b2);
     }
@@ -187,7 +195,8 @@ static void Pyramid(void)
 
 static void AngryBirds(void)
 {
-  RigidBody* b1 = new RigidBody(OBB(22.0f, 0.8f), Vec2(0, -7.5), 0.0f); 
+  OBB w1(22.0f, 0.8f);
+  RigidBody* b1 = new RigidBody(w1, Vec2(0, -7.5), 0.0f); 
   b1->Static();
   
   OBB w2(2.0f, 0.6f);
@@ -256,7 +265,8 @@ static void RotaryBox(void)
 
 static void FreeStyle(void)
 {
-  RigidBody* b1 = new RigidBody(OBB(22.0f, 0.8f), Vec2(0, -7.5), 0); 
+  OBB w1(22.0f, 0.8f);
+  RigidBody* b1 = new RigidBody(w1, Vec2(0, -7.5), 0); 
   b1->Static();
   
   OBB w2(1.0f, 11.0f);
@@ -479,14 +489,14 @@ int main(int args, char** argv)
 		ImGui::PopStyleColor();
 		ImGui::End();
 
-    // Fijar posición en esquina superior izquierda
+    // Fijar posiciï¿½n en esquina superior izquierda
     ImGui::SetNextWindowPos(ImVec2(8.0f, 8.0f), ImGuiCond_Always);
 
     // Crear ventana de ImGui para los controles
     ImGui::Begin("Controls", nullptr,
       ImGuiWindowFlags_AlwaysAutoResize |
       ImGuiWindowFlags_NoMove |          // Previene que el usuario mueva la ventana
-      ImGuiWindowFlags_NoTitleBar);      // Elimina la barra de título para un look más limpio
+      ImGuiWindowFlags_NoTitleBar);      // Elimina la barra de tï¿½tulo para un look mï¿½s limpio
   
     ImGui::Combo("Scenes", &numScene, SceneStrings, IM_ARRAYSIZE(SceneStrings));
     ImGui::Combo("Position", &Scene::CorrectionType, PositionStrings, IM_ARRAYSIZE(PositionStrings));
